@@ -3,9 +3,13 @@ sidebar_position: 1
 ---
 
 # sql - intro
+these commands are sequential<br/>
+creates db, schema, sets search_path, creates and populates tables<br/>
+then follows with queries, joins<br/>
+
 
 ## Initialize basicsdb Database
-```agsl
+```jsx title="psql"
 drop database if exists basicsdb; -- if db exists, drop it first
 
 create database basicsdb;
@@ -13,21 +17,25 @@ create database basicsdb;
 ```
 
 ## add basics schema
+```jsx title="psql"
 create schema if not exists basics;
 set search_path to basics, public;
 show search_path;
+```
 
 ## 2.3. Creating a New Table
+```jsx title="bash"
 drop table if exists weather;
 CREATE TABLE if not exists weather (
-city varchar(80),
-temp_lo int,
-temp_hi int,
-prcp real,
-cur_date date
+    city varchar(80),
+    temp_lo int,
+    temp_hi int,
+    prcp real,
+    cur_date date
 );
 
 \d weather;
+```
 
 ## 2.4. Populating a Table With Rows
 INSERT INTO weather VALUES ('San Francisco', 1, 50, 0.25, '1994-11-27');
