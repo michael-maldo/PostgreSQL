@@ -5,8 +5,7 @@ sidebar_position: 1
 # intro
 commands have so many permutations, simplest and most useful commands are provided in this tutorial
 ## PostgreSQL version
-show from command line
-```agsl
+```jsx title="bash"
 $ postgres -V
 $ psql -V
 ```
