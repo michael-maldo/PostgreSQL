@@ -23,4 +23,4 @@ jobs:
           #echo "VPS_DEST_PATH=${{ secrets.VPS_DEST_PATH }}"
           rsync -avz --delete \
             -e "ssh -o StrictHostKeyChecking=no" \
-            ./build/ ${{ secrets.VPS_USER }}@${{ vars.VPS_HOST }}:${{ secrets.VPS_DEST_PATH }}/
+            ./build/ ${{ secrets.VPS_USER }}@${{ vars.VPS_HOST }}:${{ secrets.VPS_DEST_PATH }}
