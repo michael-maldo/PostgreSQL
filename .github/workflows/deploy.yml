@@ -19,8 +19,7 @@ jobs:
 
       - name: Deploy via rsync
         run: |
-          echo "VPS_HOST=${{ vars.VPS_HOST }}"
-          #echo "VPS_DEST_PATH=${{ secrets.VPS_DEST_PATH }}"
+          echo VPS_HOST=${{ vars.VPS_HOST }}
           rsync -avz --delete \
             -e "ssh -o StrictHostKeyChecking=no" \
             ./build/ ${{ secrets.VPS_USER }}@${{ vars.VPS_HOST }}:${{ secrets.VPS_DEST_PATH }}
