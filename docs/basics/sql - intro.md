@@ -8,7 +8,7 @@ creates db, schema, sets search_path, creates and populates tables<br/>
 then follows with queries, joins<br/>
 
 
-## Initialize basicsdb Database
+## initialize basicsdb database
 ```jsx title="psql"
 drop database if exists basicsdb; -- if db exists, drop it first
 
@@ -23,8 +23,8 @@ set search_path to basics, public;
 show search_path;
 ```
 
-## 2.3. Creating a New Table
-```jsx title="bash"
+## creating a new table
+```jsx title="sql"
 drop table if exists weather;
 CREATE TABLE if not exists weather (
     city varchar(80),
@@ -34,26 +34,25 @@ CREATE TABLE if not exists weather (
     cur_date date
 );
 
+CREATE TABLE cities (
+    name            varchar(80),
+    location        point
+);
+
 \d weather;
 ```
 
-## 2.4. Populating a Table With Rows
+## populating a table with rows
+
+```jsx title='sql"
 INSERT INTO weather VALUES ('San Francisco', 1, 50, 0.25, '1994-11-27');
 INSERT INTO weather VALUES ('New York', 2, 50, 0.25, '1994-11-27');
-select * from weather;
-copy weather from '/var/lib/pgsql/scripts/weather.txt';
-select * from weather;
-copy weather to '/var/lib/pgsql/scripts/weather.copy.txt';
+SELECT * FROM weather;
+COPY weather from '/var/lib/pgsql/scripts/weather.txt';
+SELECT * from weather;
+COPY weather TO '/var/lib/pgsql/scripts/weather.copy.txt';
 
 
-## 2.5. Querying a Table
-
-CREATE TABLE cities (
-name            varchar(80),
-location        point
-);
-
-## 2.4. Populating a Table With Rows
 INSERT INTO cities VALUES ( 'San Francisco', '(-122.4194, 37.7794)');
 INSERT INTO cities VALUES ( 'New York', '(-74.0060, 40.7128)');
 
@@ -64,9 +63,11 @@ select * from cities;
 \dt basics.*
 
 \d basics.*
+```
 
-\echo -- 2.5. Querying a Table
+## querying a table
 
+### select *
 \echo select * from weather;
 select * from weather;
 
@@ -74,43 +75,62 @@ select * from weather;
 SELECT city, temp_lo, temp_hi, prcp, cur_date FROM weather;
 
 
-\echo You can write expressions, not just simple column references, in the select list. For example, you can do
+### you can write expressions
+not just simple column references, in the select list.
+
+```agsl
 \echo SELECT city, (temp_hi+temp_lo)/2 AS temp_avg, cur_date FROM weather;
 \echo
 
 SELECT city, (temp_hi+temp_lo)/2 AS temp_avg, cur_date FROM weather;
+```
 
 
 
+### a query can be “qualified”
+by adding a WHERE clause that specifies which rows are wanted.<br /> 
+The WHERE clause contains a Boolean (truth value) expression, and only rows for which the Boolean expression is true are returned. The usual Boolean operators (AND, OR, and NOT) are allowed in the qualification
 
-\echo A query can be “qualified” by adding a WHERE clause that specifies which rows are wanted. The WHERE clause contains a Boolean (truth value) expression, and only rows for which the Boolean expression is true are returned. The usual Boolean operators (AND, OR, and NOT) are allowed in the qualification
-
+```agsl
 \echo
 \echo SELECT * FROM weather WHERE city = 'San Francisco' AND prcp > 0.0;
 SELECT * FROM weather WHERE city = 'San Francisco' AND prcp > 0.0;
 
 SELECT * FROM weather WHERE city NOT = 'San Francisco' ;
+```
 
 
 
-\echo You can request that the results of a query be returned in sorted order:
+### You can request that the results of a query be returned in sorted order:
+
+```
+
+
 \echo
 
 \echo SELECT * FROM weather ORDER BY city;
 SELECT * FROM weather ORDER BY city;
 --SELECT * FROM weather ORDER BY city DESC;
+```
 
+### In this example, the sort order isn't fully specified, 
+and so you might get the San Francisco rows in either order. But you'd always get the results shown above if you do
+```agsl
 
-\echo In this example, the sort order isn't fully specified, and so you might get the San Francisco rows in either order. But you'd always get the results shown above if you do
 \echo SELECT * FROM weather ORDER BY city, temp_lo;
 SELECT * FROM weather ORDER BY city desc, temp_lo desc;
 
 
 \echo SELECT * FROM weather ORDER BY city desc, temp_lo desc;
 SELECT * FROM weather ORDER BY city desc, temp_lo desc;
+```
+
+### you can request that duplicate rows be removed from the result of a query
+```agsl
 
 
-\echo You can request that duplicate rows be removed from the result of a query:
+
+
 \echo
 \echo SELECT DISTINCT city FROM weather;
 SELECT DISTINCT city FROM weather;
@@ -120,20 +140,23 @@ SELECT DISTINCT city FROM weather;
 
 \echo select * from weather WHERE city NOT IN ('San Francisco', 'New York');
 select * from weather WHERE city NOT IN ('San Francisco', 'New York');
+```
 
-\echo
-\echo --
-\echo -- 2.6. Joins Between Tables
+### joins between yables
+
+```agsl
 \echo select * from weather;
 select * from weather;
 
 \echo select * from cities;
 select * from cities;
 
+```
 
-\echo
-\echo -- return all the weather records together with the location of the associated city,
+### return all the weather records 
+#### together with the location of the associated city
 
+```agsl
 \echo
 \echo select * from weather join cities on city = name;
 select * from weather join cities on city = name;
@@ -143,3 +166,5 @@ select * from weather join cities on city = name;
 \echo
 \echo select * from weather inner join cities on city = name;
 select * from weather inner join cities on city = name;
+
+```

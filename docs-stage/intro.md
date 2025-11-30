@@ -2,11 +2,11 @@
 sidebar_position: 1
 ---
 
-# Tutorial Intro
+# tutorial intro
 
 Let's discover **Docusaurus in less than 5 minutes**.
 
-## Getting Started
+## getting started
 
 Get started by **creating a new site**.
 

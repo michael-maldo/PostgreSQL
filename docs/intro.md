@@ -3,7 +3,8 @@ sidebar_position: 1
 ---
 
 # intro
-commands have so many permutations, simplest and most useful commands are provided in this tutorial
+commands have so many permutations
+- simplest and most useful commands are provided in this tutorial
 ## PostgreSQL version
 ```jsx title="bash"
 $ postgres -V
@@ -18,7 +19,7 @@ most common way to send queries to your PostgreSQL is using the provided psql cl
 psql -h <host> -p <port> -U <user> -d <database>
 ```
 
-## Connection URI 
+## connection URI 
 ``` jsx title="useful for scripts & Docker"
 psql postgresql://user:password@host:port/database
 
@@ -27,7 +28,7 @@ psql postgresql://appuser:secret@localhost:5432/myapp
 
 ```
 
-## Connection using environment variables
+## connection using environment variables
 
 ```jsx title="bash"
 export PGUSER=appuser
