@@ -9,24 +9,25 @@ then follows with queries, joins<br/>
 
 
 ## initialize basicsdb database
-```jsx title="psql"
-drop database if exists basicsdb; -- if db exists, drop it first
+-- if db EXISTS, DROP it first
+```jsx title="sql"
+DROP DATABASE IF EXISTS basicsdb; 
 
-create database basicsdb;
+CREATE DATABASE basicsdb;
 \c basicsdb
 ```
 
 ## add basics schema
-```jsx title="psql"
-create schema if not exists basics;
-set search_path to basics, public;
+```jsx title="sql"
+CREATE SCHEMA IF NOT EXISTS basics;
+SET search_path TO basics, public;
 show search_path;
 ```
 
 ## creating a new table
 ```jsx title="sql"
-drop table if exists weather;
-CREATE TABLE if not exists weather (
+DROP TABLE IF EXISTS weather;
+CREATE TABLE IF NOT EXISTS weather (
     city varchar(80),
     temp_lo int,
     temp_hi int,
@@ -48,16 +49,16 @@ CREATE TABLE cities (
 INSERT INTO weather VALUES ('San Francisco', 1, 50, 0.25, '1994-11-27');
 INSERT INTO weather VALUES ('New York', 2, 50, 0.25, '1994-11-27');
 SELECT * FROM weather;
-COPY weather from '/var/lib/pgsql/scripts/weather.txt';
-SELECT * from weather;
+COPY weather FROM '/var/lib/pgsql/scripts/weather.txt';
+SELECT * FROM weather;
 COPY weather TO '/var/lib/pgsql/scripts/weather.copy.txt';
 
 
 INSERT INTO cities VALUES ( 'San Francisco', '(-122.4194, 37.7794)');
 INSERT INTO cities VALUES ( 'New York', '(-74.0060, 40.7128)');
 
-\echo select * from cities;
-select * from cities;
+\echo SELECT * FROM cities;
+SELECT * FROM cities;
 
 
 \dt basics.*
@@ -67,18 +68,20 @@ select * from cities;
 
 ## querying a table
 
-### select *
-\echo select * from weather;
-select * from weather;
+### SELECT *
+
+```jsx title="sql"
+\echo SELECT * FROM weather;
+SELECT * FROM weather;
 
 \echo SELECT city, temp_lo, temp_hi, prcp, cur_date FROM weather;
 SELECT city, temp_lo, temp_hi, prcp, cur_date FROM weather;
-
+```
 
 ### you can write expressions
-not just simple column references, in the select list.
+not just simple column references, in the SELECT list.
 
-```agsl
+```jsx title="sql"
 \echo SELECT city, (temp_hi+temp_lo)/2 AS temp_avg, cur_date FROM weather;
 \echo
 
@@ -91,7 +94,7 @@ SELECT city, (temp_hi+temp_lo)/2 AS temp_avg, cur_date FROM weather;
 by adding a WHERE clause that specifies which rows are wanted.<br /> 
 The WHERE clause contains a Boolean (truth value) expression, and only rows for which the Boolean expression is true are returned. The usual Boolean operators (AND, OR, and NOT) are allowed in the qualification
 
-```agsl
+```jsx title="sql"
 \echo
 \echo SELECT * FROM weather WHERE city = 'San Francisco' AND prcp > 0.0;
 SELECT * FROM weather WHERE city = 'San Francisco' AND prcp > 0.0;
@@ -103,9 +106,7 @@ SELECT * FROM weather WHERE city NOT = 'San Francisco' ;
 
 ### You can request that the results of a query be returned in sorted order:
 
-```
-
-
+```jsx title="sql"
 \echo
 
 \echo SELECT * FROM weather ORDER BY city;
@@ -115,7 +116,7 @@ SELECT * FROM weather ORDER BY city;
 
 ### In this example, the sort order isn't fully specified, 
 and so you might get the San Francisco rows in either order. But you'd always get the results shown above if you do
-```agsl
+```jsx title="sql"
 
 \echo SELECT * FROM weather ORDER BY city, temp_lo;
 SELECT * FROM weather ORDER BY city desc, temp_lo desc;
@@ -126,11 +127,7 @@ SELECT * FROM weather ORDER BY city desc, temp_lo desc;
 ```
 
 ### you can request that duplicate rows be removed from the result of a query
-```agsl
-
-
-
-
+```jsx title="sql"
 \echo
 \echo SELECT DISTINCT city FROM weather;
 SELECT DISTINCT city FROM weather;
@@ -138,33 +135,31 @@ SELECT DISTINCT city FROM weather;
 
 \echo using NOT
 
-\echo select * from weather WHERE city NOT IN ('San Francisco', 'New York');
-select * from weather WHERE city NOT IN ('San Francisco', 'New York');
+\echo SELECT * FROM weather WHERE city NOT IN ('San Francisco', 'New York');
+SELECT * FROM weather WHERE city NOT IN ('San Francisco', 'New York');
 ```
 
 ### joins between yables
 
-```agsl
-\echo select * from weather;
-select * from weather;
+```jsx title="sql"
+\echo SELECT * FROM weather;
+SELECT * FROM weather;
 
-\echo select * from cities;
-select * from cities;
+\echo SELECT * FROM cities;
+SELECT * FROM cities;
 
 ```
 
 ### return all the weather records 
 #### together with the location of the associated city
 
-```agsl
+```jsx title="sql"
 \echo
-\echo select * from weather join cities on city = name;
-select * from weather join cities on city = name;
-
-
+\echo SELECT * FROM weather JOIN cities ON city = name;
+SELECT * FROM weather JOIN cities ON city = name;
 
 \echo
-\echo select * from weather inner join cities on city = name;
-select * from weather inner join cities on city = name;
+\echo SELECT * FROM weather INNER JOIN cities ON city = name;
+SELECT * FROM weather INNER JOIN cities ON city = name;
 
 ```
