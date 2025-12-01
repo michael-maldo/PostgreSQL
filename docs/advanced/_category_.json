@@ -2,6 +2,7 @@
   "label": "advanced",
   "position": 3,
   "link": {
-    "type": "generated-index"
+    "type": "generated-index",
+    "description": "SQL Language - Advanced"
   }
 }
