@@ -138,9 +138,7 @@ SELECT DISTINCT city FROM weather;
 \echo SELECT * FROM weather WHERE city NOT IN ('San Francisco', 'New York');
 SELECT * FROM weather WHERE city NOT IN ('San Francisco', 'New York');
 ```
-
-### joins between yables
-
+## joins between tables
 ```jsx title="sql"
 \echo SELECT * FROM weather;
 SELECT * FROM weather;
@@ -149,11 +147,13 @@ SELECT * FROM weather;
 SELECT * FROM cities;
 
 ```
-
-### return all the weather records 
-#### together with the location of the associated city
+### inner join
+return all the weather records <br/>
+together with the location of the associated city<br/>
 
 ```jsx title="sql"
+\both of these queries will produce same results
+\ 'join' is same as 'inner joinseek'
 \echo
 \echo SELECT * FROM weather JOIN cities ON city = name;
 SELECT * FROM weather JOIN cities ON city = name;
