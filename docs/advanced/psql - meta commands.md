@@ -90,3 +90,10 @@ psql -f scripts.sql
 ```agsl
 \i scripts.sql
 ```
+
+#### issue command line from inside psql
+This executes pwd in the shell, not inside PostgreSQL.
+```jsx title='sql'
+\! pwd
+```
+

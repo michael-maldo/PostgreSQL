@@ -211,8 +211,20 @@ GROUP BY city;
 
 ```
 
+## updates
+```jsx title="sql'
+UPDATE weather
+SET temp_hi = temp_hi - 2,
+WHERE date > '1994-11-28';
+```
 
+## deletions
+Without a qualification, DELETE will remove all rows from the given table, leaving it empty. The
+system will not request confirmation before doing this!
 
+```jsx title="sql"
+DELETE FROM weather WHERE city = 'Hayward';
+```
 
 ## window function
 
