@@ -163,3 +163,56 @@ SELECT * FROM weather JOIN cities ON city = name;
 SELECT * FROM weather INNER JOIN cities ON city = name;
 
 ```
+
+### left join
+
+### right join
+
+### full outer join
+
+## aggregate function
+
+```jsx title="sql"
+\echo
+\echo Aggregate Functions
+
+\echo SELECT * FROM weather
+SELECT * FROM weather;
+
+
+
+\echo  -- SELECT MIN(temp_lo) FROM weather;
+SELECT MIN(temp_lo) FROM weather;
+\echo  -- SELECT MAX(temp_lo) FROM weather;
+SELECT MAX(temp_lo) FROM weather;
+\echo -- SELECT AVG(temp_lo) FROM weather;
+SELECT AVG(temp_lo) FROM weather;
+
+
+SELECT city FROM weather WHERE temp_lo = (SELECT max(temp_lo) FROM weather);
+
+SELECT city, count(*), max(temp_lo)
+FROM weather
+GROUP BY city;
+
+SELECT city, count(*), max(temp_lo)
+FROM weather
+GROUP BY city
+HAVING max(temp_lo) < 40;
+
+SELECT city, count(*), max(temp_lo)
+FROM weather
+WHERE city LIKE 'S%'
+GROUP BY city;
+
+SELECT city, count(*) FILTER (WHERE temp_lo < 45), max(temp_lo)
+FROM weather
+GROUP BY city;
+
+```
+
+
+
+
+## window function
+
