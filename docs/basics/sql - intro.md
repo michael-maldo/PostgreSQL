@@ -104,7 +104,7 @@ SELECT * FROM weather WHERE city NOT = 'San Francisco' ;
 
 
 
-### You can request that the results of a query be returned in sorted order:
+### you can request that the results of a query be returned in sorted order:
 
 ```jsx title="sql"
 \echo
@@ -114,7 +114,7 @@ SELECT * FROM weather ORDER BY city;
 --SELECT * FROM weather ORDER BY city DESC;
 ```
 
-### In this example, the sort order isn't fully specified, 
+### in this example, the sort order isn't fully specified, 
 and so you might get the San Francisco rows in either order. But you'd always get the results shown above if you do
 ```jsx title="sql"
 
