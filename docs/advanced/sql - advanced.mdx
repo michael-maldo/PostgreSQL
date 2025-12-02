@@ -1,0 +1,45 @@
+---
+sidebar_position: 1
+---
+
+# SQL - Advanced Features
+Basic SQL discussed how to store and access data in PostgreSQL. <br />
+More advanced features of SQL discussed here
+- how to simplify management
+- prevent loss or corruption of your data.
+- PostgreSQL extensions.
+
+## Views
+best used for
+- a stable API layer
+- simplifying complex queries
+- security / permission control
+- virtual columns / computed fields
+- providing backward compatibility
+
+``` jsx title="sql"
+-- creates a view
+CREATE OR REPLACE VIEW sf_weather_list AS
+SELECT name, location, temp_lo, temp_hi, prcp, cur_date
+    FROM weather JOIN cities on city = name
+    WHERE city = 'San Francisco';
+
+-- query/use a view like any other table
+SELECT name, location, temp_lo, temp_hi, prcp, cur_date
+    FROM sf_weather_list;
+
+```
+
+### security / permission control
+
+``` jsx title="sql"
+-- expose only part of a table.
+CREATE VIEW public_users AS
+SELECT id, name FROM users;
+
+
+-- Give permissions
+GRANT SELECT ON public_users TO user1;
+```
+
+## Foreign Keys

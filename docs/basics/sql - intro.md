@@ -3,7 +3,6 @@ sidebar_position: 1
 ---
 
 # sql - intro
-these commands are sequential<br/>
 creates db, schema, sets search_path, creates and populates tables<br/>
 then follows with queries, joins<br/>
 

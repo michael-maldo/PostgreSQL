@@ -1,66 +1,71 @@
 ---
-sidebar_position: 1
+sidebar_position: 2
 ---
 # psql meta commands
-# commonly used meta commands
-(slash commands)
+slash commands
 
 ## tips and caveats
 ### make sure to use \ (back slash) not! / (forward slash) 
-``` agsl
+``` jsx title="sql"
 \meta_command
 ```
-### when entering sql commands make sure to end with ; (semicolon)
-otherwise the prompt is not executing the sql yet until it sees a ;
-```agsl
-set search_path to schema1, schema2;
-show search_path;
+
+### sql commands ends with semicolon ;
+; tells the SQL client  "Execute this SQL statement."
+```jsx title="sql"
+SELECT * FROM tablename;
+```
+
+### set search_path
+``` jsx title="sql"
+SET SEARCH_PATH TO schema1, schema2;
+SHOW SEARCH_PATH;
 ```
 ### you can use -- to write comments in sql
-```agsl
+```jsx title="sql"
 -- this is a comment, everything is treated as comment until end of the line
 ```
 
 ## connection
 ### show current connection
-```agsl
+```jsx title="sql"
 \conninfo
 ```
 ### connect to a database
-```agsl
+```jsx title="sql"
 \c dbname
 ```
 
 ## db
 ### list available databases
-```agsl
+```jsx title="sql"
 \l
 ```
 
 ## schema
 ### show available schemas in current db connection
-```agsl
+```jsx title="sql"
 -- list schemas available in current db
 \dn
 
 -- search_path control which schema(s) PostgreSQL looks in first
 -- without setting search_path ( defaults to public schema )
-select * myschema.mytable ; 
+SELECT * myschema.mytable ; 
 
 -- when search_path set to myschema
 -- no need to specify schema in the query
-select * from mytable;
+SELECT * FROM mytable;
 
 
 -- set search_path
-set search_path to schema_name1, schema_name2;
+SET SEARCH_PATH TO schema_name1, schema_name2;
 
 -- show current search_path settings
-show search_path;
+SHOW SEARCH_PATH;
 ```
 
 ## relations
-```agsl
+```jsx title="sql"
 -- list all relations in a a search path
 \d
 \dt
@@ -83,17 +88,28 @@ show search_path;
 ### sql script files 
 can contain both sql and psql metacommands
 #### from the shell
-```agsl
+```jsx title="sql"
 psql -f scripts.sql
 ```
 #### from inside psql - path settings/searching apply
-```agsl
+```jsx title="sql"
 \i scripts.sql
 ```
 
 #### issue command line from inside psql
 This executes pwd in the shell, not inside PostgreSQL.
 ```jsx title='sql'
+-- psql internal command to change directory
+-- this is useful when using \i, executes sql in a file
+\cd
+
+-- executes linux command from inside psql
+-- confirms cd has been perfomed
 \! pwd
+
+-- check files available in current directory
+\! ls
+\1 ls -l
+
 ```
 
