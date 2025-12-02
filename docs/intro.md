@@ -39,4 +39,64 @@ export PGPORT=5432
 # then simply run
 $psql
 ```
+1. Table Inheritance (OO-like behavior)
 
+Native parent/child table relationships.
+
+Queries on a parent can automatically include child tables.
+
+Supports polymorphism in SQL queries.
+
+Other RDBMS require manual joins, unions, or table-per-type patterns to achieve the same.
+
+2. Advanced indexing options
+
+Multiple index types: B-tree, GIN, GiST, BRIN.
+
+Supports full-text search, array, JSONB, and geospatial data indexes.
+
+Partial and expression-based indexes.
+
+Most RDBMS only offer simple B-tree indexes.
+
+3. Extensible data types
+
+Supports native arrays, JSON/JSONB, HSTORE, ranges, UUIDs, and custom types.
+
+You can create your own user-defined types and functions.
+
+4. Procedural language and triggers
+
+Supports PL/pgSQL, PL/Python, PL/Perl, and more.
+
+Powerful triggers and rules for automated behaviors.
+
+You can implement complex business logic directly in the database.
+
+5. Advanced constraints and expressions
+
+CHECK constraints with expressions.
+
+Exclusion constraints (e.g., no overlapping ranges).
+
+Foreign keys, partial unique constraints, and deferrable constraints.
+
+6. Concurrency and transaction model
+
+MVCC (Multi-Version Concurrency Control) for highly concurrent workloads.
+
+Fine-grained control over transaction isolation levels.
+
+7. Extensibility
+
+Add custom functions, operators, index types, aggregates.
+
+Create domains (custom data types with constraints).
+
+Support for procedural logic and extensions like PostGIS for GIS.
+
+Conclusion
+
+PostgreSQL isn’t just a relational database — it’s feature-rich, extensible, and highly capable, often compared to “enterprise-grade” RDBMS like Oracle or SQL Server.
+
+Table inheritance, advanced indexing, extensible types, and powerful procedural features are just a few examples that make PostgreSQL an advanced RDBMS.
