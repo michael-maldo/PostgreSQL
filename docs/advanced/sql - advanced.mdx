@@ -43,3 +43,56 @@ GRANT SELECT ON public_users TO user1;
 ```
 
 ## Foreign Keys
+
+``` jsx title="sql"
+-- failed - referenced table(cities), column (name) - no unique restrain
+basicsdb=# ALTER TABLE weather ADD FOREIGN KEY (city) REFERENCES cities(name);
+ERROR:  there is no unique constraint matching given keys for referenced table "cities"
+
+-- alter tabe, add primary key to cities, name
+basicsdb=# ALTER TABLE cities ADD CONSTRAINT cities_name_pk PRIMARY KEY (name);
+ALTER TABLE
+
+-- alter table weather - add foreign key city column, references cities, name
+basicsdb=# ALTER TABLE weather ADD FOREIGN KEY (city) REFERENCES cities(name);
+
+-- failed weather contains - 'Hayward' city not in cities,name
+ERROR:  insert or update on table "weather" violates foreign key constraint "weather_city_fkey"
+DETAIL:  Key (city)=(Hayward) is not present in table "cities".
+
+-- added entry Hayward to cities table
+basicsdb=# insert  into cities ("name", "location") values ('Hayward', '123.57,-25.43');
+INSERT 0 1
+
+-- success alter table, add foreign key to city, refrencing cities, name
+basicsdb=# ALTER TABLE weather ADD FOREIGN KEY (city) REFERENCES cities(name);
+ALTER TABLE
+
+basicsdb=# \d cities
+                       Table "basics.cities"
+  Column  |         Type          | Collation | Nullable | Default
+----------+-----------------------+-----------+----------+---------
+ name     | character varying(80) |           | not null |
+ location | point                 |           |          |
+Indexes:
+    "cities_name_pk" PRIMARY KEY, btree (name)
+Referenced by:
+    TABLE "weather" CONSTRAINT "weather_city_fkey" FOREIGN KEY (city) REFERENCES cities(name)
+
+
+
+basicsdb=# \d weather;
+                      Table "basics.weather"
+  Column  |         Type          | Collation | Nullable | Default
+----------+-----------------------+-----------+----------+---------
+ city     | character varying(80) |           |          |
+ temp_lo  | integer               |           |          |
+ temp_hi  | integer               |           |          |
+ prcp     | real                  |           |          |
+ cur_date | date                  |           |          |
+Foreign-key constraints:
+    "weather_city_fkey" FOREIGN KEY (city) REFERENCES cities(name)
+
+basicsdb=#
+
+```
