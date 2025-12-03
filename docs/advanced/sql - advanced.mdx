@@ -49,7 +49,7 @@ GRANT SELECT ON public_users TO user1;
 basicsdb=# ALTER TABLE weather ADD FOREIGN KEY (city) REFERENCES cities(name);
 ERROR:  there is no unique constraint matching given keys for referenced table "cities"
 
--- alter tabe, add primary key to cities, name
+-- alter table, add primary key to cities, name
 basicsdb=# ALTER TABLE cities ADD CONSTRAINT cities_name_pk PRIMARY KEY (name);
 ALTER TABLE
 
