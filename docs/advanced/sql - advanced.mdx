@@ -102,3 +102,18 @@ Transactions are a fundamental concept of all database systems. The essential po
 it bundles multiple steps into a single, all-or-nothing operation. The intermediate states between the steps
 are not visible to other concurrent transactions, and if some failure occurs that prevents the transaction
 from completing, then none of the steps affect the database at all.
+
+``` jsx title="sql"
+BEGIN;
+UPDATE accounts SET balance = balance - 100.00
+WHERE name = 'Alice';
+SAVEPOINT my_savepoint;
+19Advanced Features
+UPDATE accounts SET balance = balance + 100.00
+WHERE name = 'Bob';
+-- oops ... forget that and use Wally's account
+ROLLBACK TO my_savepoint;
+UPDATE accounts SET balance = balance + 100.00
+WHERE name = 'Wally';
+COMMIT;
+```
