@@ -103,18 +103,45 @@ it bundles multiple steps into a single, all-or-nothing operation. The intermedi
 are not visible to other concurrent transactions, and if some failure occurs that prevents the transaction
 from completing, then none of the steps affect the database at all.
 
+### init transdb
 ``` jsx title="sql"
 
-BEGIN;
+DROP DATABASE IF EXISTS transdb;
+CREATE DATABASE transdb;
+\c transdb;
+CREATE SCHEMA test;
+SET SEARCH_PATH TO test, public;
+
+CREATE TABLE accounts (
+    id SERIAL PRIMARY KEY,
+    name TEXT UNIQUE NOT NULL,
+    balance NUMERIC(12,2) NOT NULL DEFAULT 0
+);
+
+INSERT INTO accounts (name, balance) VALUES
+('Alice', 1000.00),
+('Bob',   500.00),
+('Wally', 300.00);
+
+
+SELECT * FROM accounts;
+
+
+
+```
+
+### trans queries
+``` jsx title="sql"
+
 UPDATE accounts SET balance = balance - 100.00
 WHERE name = 'Alice';
-SAVEPOINT my_savepoint;
-19Advanced Features
+UPDATE branches SET balance = balance - 100.00
+WHERE name = (SELECT branch_name FROM accounts WHERE name =
+'Alice');
 UPDATE accounts SET balance = balance + 100.00
 WHERE name = 'Bob';
--- oops ... forget that and use Wally's account
-ROLLBACK TO my_savepoint;
-UPDATE accounts SET balance = balance + 100.00
-WHERE name = 'Wally';
-COMMIT;
+UPDATE branches SET balance = balance + 100.00
+WHERE name = (SELECT branch_name FROM accounts WHERE name =
+'Bob');
+
 ```
