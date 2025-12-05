@@ -104,6 +104,7 @@ are not visible to other concurrent transactions, and if some failure occurs tha
 from completing, then none of the steps affect the database at all.
 
 ``` jsx title="sql"
+
 BEGIN;
 UPDATE accounts SET balance = balance - 100.00
 WHERE name = 'Alice';
