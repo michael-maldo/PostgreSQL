@@ -105,27 +105,217 @@ from completing, then none of the steps affect the database at all.
 
 ### init transdb
 ``` jsx title="sql"
-
 DROP DATABASE IF EXISTS transdb;
 CREATE DATABASE transdb;
 \c transdb;
+
 CREATE SCHEMA test;
 SET SEARCH_PATH TO test, public;
 
-CREATE TABLE accounts (
+
+-- Drop old tables if they exist (optional)
+-- DROP TABLE IF EXISTS accounts CASCADE;
+-- DROP TABLE IF EXISTS branches CASCADE;
+
+-------------------------------------
+-- 1. Create branches table
+-------------------------------------
+CREATE TABLE branches (
     id SERIAL PRIMARY KEY,
-    name TEXT UNIQUE NOT NULL,
+    name TEXT NOT NULL UNIQUE,
     balance NUMERIC(12,2) NOT NULL DEFAULT 0
 );
 
-INSERT INTO accounts (name, balance) VALUES
-('Alice', 1000.00),
-('Bob',   500.00),
-('Wally', 300.00);
+-------------------------------------
+-- 2. Create accounts table
+-------------------------------------
+CREATE TABLE accounts (
+    id SERIAL PRIMARY KEY,
+    name TEXT UNIQUE NOT NULL,
+    branch_id INT NOT NULL REFERENCES branches(id),
+    balance NUMERIC(12,2) NOT NULL DEFAULT 0
+);
 
 
+-- bulk inserts
+-- good for initializing data base from scratch
+-- 10+ branches, thousands of accounts, CSV input
+-- Begin transaction
+BEGIN;
+
+-- Create temporary staging tables
+CREATE TEMP TABLE staging_branches (
+    name text,
+    balance numeric
+);
+
+CREATE TEMP TABLE staging_accounts (
+    branch_name text,
+    name text,
+    balance numeric
+);
+
+-- Load CSVs into staging tables
+-- Adjust paths as needed
+\copy staging_branches(name, balance) FROM 'branches.csv' DELIMITER ',' CSV HEADER;
+\copy staging_accounts(branch_name, name, balance) FROM 'accounts.csv' DELIMITER ',' CSV HEADER;
+
+-- Insert branches into main table, capture IDs
+-- Use CTE to map branch_name to branch_id
+WITH inserted_branches AS (
+    INSERT INTO branches(name, balance)
+    SELECT name, balance
+    FROM staging_branches
+    RETURNING id, name
+)
+-- Insert accounts using the branch IDs
+INSERT INTO accounts(name, branch_id, balance)
+SELECT a.name, b.id, a.balance
+FROM staging_accounts a
+JOIN inserted_branches b ON a.branch_name = b.name;
+
+-- Commit transaction
+COMMIT;
+
+
+
+
+-------------------------------------
+-- 3. Insert branch data
+-------------------------------------
+
+-- 4. Insert account data
+-------------------------------------
+-- insert using CTE
+/*
+WITH BranchA AS (
+    INSERT INTO branches(name, balance)
+    VALUES ('BranchA', 5000)
+    RETURNING id
+)
+INSERT INTO accounts(name, branch_id, balance)
+SELECT * FROM (
+    SELECT 'Alice', id, 100.00 FROM BranchA
+    UNION ALL
+    SELECT 'Wally', id, 200.00 FROM BranchA
+) AS t;
+
+
+WITH BranchB AS (
+    INSERT INTO branches(name, balance)
+    VALUES ('BranchB', 5000)
+    RETURNING id
+)
+INSERT INTO accounts(name, branch_id, balance)
+SELECT * FROM (
+    SELECT 'Mark', id, 100.00 FROM BranchB
+    UNION ALL
+    SELECT 'John', id, 200.00 FROM BranchB
+) AS t;
+
+*/
+
+-- insert using INSERT ... VALUES
+/*
+BEGIN;
+
+-- Capture the ID into a psql variable
+\set branch_id `INSERT INTO branches(name) VALUES ('New Branch') RETURNING id`
+
+-- Use the variable
+INSERT INTO accounts(name, branch_id, balance)
+VALUES ('Mark', :branch_id, 500.00);
+
+COMMIT;
+
+*/
+
+/*
+
+DO $$
+DECLARE
+    branch_a_id INT;
+    branch_b_id INT;
+BEGIN
+    INSERT INTO branches(name, balance)
+    VALUES ('BranchA', 5000)
+    RETURNING id INTO branch_a_id;
+
+    INSERT INTO accounts(name, branch_id, balance)
+    VALUES ('Alice', branch_a_id, 100.00),
+           ('Wally', branch_a_id, 200.00);
+
+    INSERT INTO branches(name, balance)
+    VALUES ('BranchB', 5000)
+    RETURNING id INTO branch_b_id;
+
+    INSERT INTO accounts(name, branch_id, balance)
+    VALUES ('Alice', branch_b_id, 100.00),
+           ('Wally', branch_b_id, 200.00);
+END $$;
+
+
+*/
+
+/*
+
+BEGIN;
+
+-- Insert branch and capture returned id
+INSERT INTO branches(name, balance)
+VALUES ('BranchA', 5000)
+RETURNING id
+\gset
+
+-- Use the returned id in subsequent inserts
+INSERT INTO accounts(name, branch_id, balance) VALUES
+('Alice', :id, 100.00),
+('Wally', :id, 200.00);
+
+COMMIT;
+
+
+*/
+
+/*
+-- for a different variable name
+
+INSERT INTO branches(name, balance)
+VALUES ('BranchA', 5000)
+RETURNING id AS branch_id
+\gset
+
+-- Now you can use :branch_id
+INSERT INTO accounts(name, branch_id, balance) VALUES
+('Alice', :branch_id, 100.00),
+('Wally', :branch_id, 200.00);
+
+
+
+*/
+
+
+
+/*
+
+Long id = jdbcTemplate.queryForObject(
+    "INSERT INTO branches(name) VALUES (?) RETURNING id",
+    Long.class,
+    "New Branch"
+ );
+
+ jdbcTemplate.update(
+    "INSERT INTO accounts(name, branch_id, balance) VALUES (?, ?, ?)",
+    "Mark", id, 500.00
+ );
+
+*/
+
+-------------------------------------
+-- 5. Show initial data
+-------------------------------------
 SELECT * FROM accounts;
-
+SELECT * FROM branches;
 
 
 ```
