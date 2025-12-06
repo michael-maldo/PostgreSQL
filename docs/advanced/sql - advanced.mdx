@@ -105,6 +105,7 @@ from completing, then none of the steps affect the database at all.
 
 ### init transdb
 ``` jsx title="sql"
+
 DROP DATABASE IF EXISTS transdb;
 CREATE DATABASE transdb;
 \c transdb;
@@ -216,19 +217,6 @@ SELECT * FROM (
 */
 
 -- insert using INSERT ... VALUES
-/*
-BEGIN;
-
--- Capture the ID into a psql variable
-\set branch_id `INSERT INTO branches(name) VALUES ('New Branch') RETURNING id`
-
--- Use the variable
-INSERT INTO accounts(name, branch_id, balance)
-VALUES ('Mark', :branch_id, 500.00);
-
-COMMIT;
-
-*/
 
 /*
 
@@ -262,6 +250,9 @@ END $$;
 BEGIN;
 
 -- Insert branch and capture returned id
+-- make sure there is no semicolon after the SQL --
+-- gset is the one that executes the statement
+-- and captures the return into a variable
 INSERT INTO branches(name, balance)
 VALUES ('BranchA', 5000)
 RETURNING id
