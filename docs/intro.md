@@ -58,6 +58,8 @@ export PGPORT=5432
 # then simply run
 $psql
 ```
+## PostgreSQL advanced features
+
 1. Table Inheritance (OO-like behavior)
 
 Native parent/child table relationships.
