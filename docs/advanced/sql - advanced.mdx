@@ -1,5 +1,5 @@
 ---
-sidebar_position: 1
+sidebar_position: 2
 ---
 
 # SQL - Advanced Features
@@ -311,18 +311,39 @@ SELECT * FROM branches;
 
 ```
 
-### trans queries
-``` jsx title="sql"
+### sample csv data files
+branches
+``` jsx title="branches.csv"
+name,balance
+BranchA,5000
+BranchB,3000
+```
 
-UPDATE accounts SET balance = balance - 100.00
-WHERE name = 'Alice';
-UPDATE branches SET balance = balance - 100.00
-WHERE name = (SELECT branch_name FROM accounts WHERE name =
-'Alice');
-UPDATE accounts SET balance = balance + 100.00
-WHERE name = 'Bob';
-UPDATE branches SET balance = balance + 100.00
-WHERE name = (SELECT branch_name FROM accounts WHERE name =
-'Bob');
+accounts
+``` jsx title="accounts.csv"
+branch_name,name,balance
+BranchA,Alice,100
+BranchA,Wally,200
+BranchB,Mark,100
+BranchB,John,200
+BranchB,Charlie,250
+```
+
+
+### transaction queries
+``` jsx title="transaction.sql"
+
+BEGIN;
+    UPDATE accounts SET balance = balance - 100.00
+    WHERE name = 'Alice';
+    UPDATE branches SET balance = balance - 100.00
+    WHERE name = (SELECT branch_name FROM accounts WHERE name =
+    'Alice');
+    UPDATE accounts SET balance = balance + 100.00
+    WHERE name = 'Bob';
+    UPDATE branches SET balance = balance + 100.00
+    WHERE name = (SELECT branch_name FROM accounts WHERE name =
+    'Bob');
+COMMIT;
 
 ```

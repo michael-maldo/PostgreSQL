@@ -11,7 +11,26 @@ $ postgres -V
 $ psql -V
 ```
 
-## psql
+## PostgreSQL config files
+```jsx title="bash"
+$ sudo -u postgres psql -c "SHOW config_file;"
+$ sudo -u postgres psql -c "SHOW hba_file;"
+```
+
+## changing postgresql user password
+```jsx title="bash"
+ALTER USER postgres WITH PASSWORD 'new_strong_password';
+```
+
+## granting privileges to a user
+``` jsx title="sql"
+GRANT CONNECT ON DATABASE gnostexdb TO gnostex;
+GRANT USAGE ON SCHEMA public TO gnostex;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO gnostex;
+ 
+```
+
+## psql - PostgreSQL client
 most common way to send queries to your PostgreSQL is using the provided psql client
 
 ### full connection format

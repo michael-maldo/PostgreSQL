@@ -1,0 +1,193 @@
+---
+sidebar_position: 3
+---
+
+# Docker
+
+Perfect — let’s go step by step to set up your VPS for a Dockerized Spring Boot deployment. Since you already have PostgreSQL running natively, I’ll include how to connect your containerized app to that DB.
+
+This will be production-ready but simple, no Kubernetes yet.
+
+## Install Docker on your VPS
+
+
+``` jsx title="bash"
+Assuming Ubuntu:
+# Update packages
+sudo apt update && sudo apt upgrade -y
+
+# Install Docker
+sudo apt install -y docker.io
+
+# Enable Docker to start on boot
+sudo systemctl enable docker
+sudo systemctl start docker
+
+# Add your user to the docker group
+sudo usermod -aG docker $USER
+
+```
+
+Log out and back in so your user is in the docker group.
+
+Test installation:
+
+docker run hello-world
+
+## Create a Dockerfile for your Spring Boot app
+
+Place this in the root of your Spring Boot project:
+
+
+``` jsx title="bash"
+# Use Temurin Java 21 JRE as base
+FROM eclipse-temurin:21-jre
+
+# Set working directory inside container
+WORKDIR /app
+
+# Copy the Spring Boot JAR into container
+COPY target/*.jar app.jar
+
+# Expose port 8080 (default Spring Boot)
+EXPOSE 8080
+
+# Start the application
+ENTRYPOINT ["java","-jar","/app/app.jar"]
+```
+
+This is a single-stage Docker build, simple for your VPS.
+
+Optional: Later you can make it multi-stage (build + runtime).
+
+## Build Docker image on VPS (manual test)
+
+From your project root:
+
+``` jsx title="bash"
+# Build Docker image
+docker build -t myapp:latest .
+
+# Run container
+docker run -d --name myapp \
+-p 8080:8080 \
+-e SPRING_DATASOURCE_URL=jdbc:postgresql://127.0.0.1:5432/mydb \
+-e SPRING_DATASOURCE_USERNAME=appuser \
+-e SPRING_DATASOURCE_PASSWORD=secret \
+myapp:latest
+
+
+Check logs:
+
+docker logs -f myapp
+
+
+Stop / remove container:
+
+docker stop myapp
+docker rm myapp
+```
+
+## Connect container to your native PostgreSQL
+
+PostgreSQL is running on 127.0.0.1 (native VPS)
+
+Container sees VPS IP as host (by default localhost inside container ≠ host)
+
+Options:
+
+``` jsx title="bash"
+Use VPS private IP
+
+docker run -d --name myapp \
+-p 8080:8080 \
+-e SPRING_DATASOURCE_URL=jdbc:postgresql://<VPS-IP>:5432/mydb \
+-e SPRING_DATASOURCE_USERNAME=appuser \
+-e SPRING_DATASOURCE_PASSWORD=secret \
+myapp:latest
+
+
+Host network mode (Linux only)
+
+docker run -d --name myapp --network=host \
+-e SPRING_DATASOURCE_URL=jdbc:postgresql://127.0.0.1:5432/mydb \
+-e SPRING_DATASOURCE_USERNAME=appuser \
+-e SPRING_DATASOURCE_PASSWORD=secret \
+myapp:latest
+```
+
+Option 1 is safer and recommended.
+
+## Running your container as a service (production-style)
+
+``` jsx title="bash"
+Using systemd:
+sudo nano /etc/systemd/system/myapp.service
+
+
+Paste:
+
+[Unit]
+Description=My Spring Boot Docker App
+After=docker.service
+Requires=docker.service
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/docker run --rm \
+--name myapp \
+-p 8080:8080 \
+-e SPRING_DATASOURCE_URL=jdbc:postgresql://<VPS-IP>:5432/mydb \
+-e SPRING_DATASOURCE_USERNAME=appuser \
+-e SPRING_DATASOURCE_PASSWORD=secret \
+myapp:latest
+ExecStop=/usr/bin/docker stop myapp
+
+[Install]
+WantedBy=multi-user.target
+
+
+Reload and start:
+
+sudo systemctl daemon-reload
+sudo systemctl enable myapp
+sudo systemctl start myapp
+sudo systemctl status myapp
+```
+
+## Optional: Automate deployment via GitHub Actions
+
+Example steps:
+
+``` jsx title="bash"
+- name: Build JAR
+run: mvn -B package
+
+- name: Build Docker image
+run: docker build -t myapp:latest .
+
+- name: Copy Docker image to VPS
+run: |
+docker save myapp:latest | bzip2 | ssh user@your-vps "bunzip2 | docker load"
+
+- name: Restart Docker container on VPS
+run: ssh user@your-vps "sudo systemctl restart myapp"
+```
+
+
+## This gives you full CI/CD from GitHub → VPS with Docker.
+
+✅ TL;DR Setup Flow
+
+Install Docker on VPS
+
+Create Dockerfile for Spring Boot JAR
+
+Build image locally or via CI
+
+Run container, passing DB credentials
+
+Use systemd to run as a service
+
+Optionally automate with GitHub Actions
+
