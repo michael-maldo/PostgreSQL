@@ -191,3 +191,249 @@ Use systemd to run as a service
 
 Optionally automate with GitHub Actions
 
+## docker running image
+
+```jsx title="bash"
+$ docker run -d -p 8080:8080 --name gnostex-backend-app --add-host=host.docker.internal:host-gateway -e SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/gnostexdb -e SPRING_DATASOURCE_USERNAME=gnostex -e SPRING_DATASOURCE_PASSWORD=gnostex backend-app
+docker: Error response from daemon: Conflict. The container name "/backend-app" is already in use by container "2aaf2419dedcd166ce480f6e9cd693d4c004da5bd6ee57aa97628ca78b5ae950". You have to remove (or rename) that container to be able to reuse that name.
+See 'docker run --help'.
+
+$ docker rm gnostex-backend-app
+Error response from daemon: You cannot remove a running container 2aaf2419dedcd166ce480f6e9cd693d4c004da5bd6ee57aa97628ca78b5ae950. Stop the container before attempting removal or force remove
+
+$ docker rm -f gnostex-backend-app
+backend-app
+
+$ docker run -d -p 8080:8080 --name gnostex-backend-app --add-host=host.docker.internal:host-gateway -e SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/gnostexdb -e SPRING_DATASOURCE_USERNAME=gnostex -e SPRING_DATASOURCE_PASSWORD=gnostex backend-app
+447965ce88b7f65915b669e68d8676c73d190f2be199ad360fa7eb91c29002dc
+
+$ docker ps
+CONTAINER ID   IMAGE         COMMAND                  CREATED         STATUS         PORTS                                       NAMES
+447965ce88b7   backend-app   "java -jar /app/app.…"   7 minutes ago   Up 7 minutes   0.0.0.0:8080->8080/tcp, :::8080->8080/tcp   backend-app
+8f2c6d596548   registry:2    "/entrypoint.sh /etc…"   14 months ago   Up 15 hours    0.0.0.0:5000->5000/tcp, :::5000->5000/tcp   registry
+
+gnosticka@linux:~$ docker logs gnostex-backend-app
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v3.2.5)
+
+2025-12-21T17:30:28.318Z  INFO 1 --- [gnostex-backend] [           main] a.g.g.GnostexBackendApplication          : Starting GnostexBackendApplication v0.0.1-SNAPSHOT using Java 21.0.9 with PID 1 (/app/app.jar started by root in /app)
+2025-12-21T17:30:28.320Z  INFO 1 --- [gnostex-backend] [           main] a.g.g.GnostexBackendApplication          : No active profile set, falling back to 1 default profile: "default"
+.
+.
+.
+.
+
+gnosticka@linux:~$ docker stop 447965ce88b7
+447965ce88b7
+gnosticka@linux:~$
+gnosticka@linux:~$
+gnosticka@linux:~$ docker ps
+CONTAINER ID   IMAGE        COMMAND                  CREATED         STATUS        PORTS                                       NAMES
+8f2c6d596548   registry:2   "/entrypoint.sh /etc…"   14 months ago   Up 15 hours   0.0.0.0:5000->5000/tcp, :::5000->5000/tcp   registry
+gnosticka@linux:~$
+
+
+gnosticka@linux:~$ docker images
+REPOSITORY                               TAG                             IMAGE ID       CREATED         SIZE
+backend-app                              latest                          9ce344c390e4   11 hours ago    335MB
+gnostex-backend                          latest                          9ce344c390e4   11 hours ago    335MB
+
+
+
+/*
+Correct removal sequence
+Stop the container (if running)
+$ docker stop backend-app
+
+Remove the container
+$ docker rm backend-app
+
+Now remove the image
+$ docker rmi backend-app:latest
+
+One-liner (common in dev)
+$ docker rm -f backend-app && docker rmi backend-app:latest
+*/
+
+
+gnosticka@linux:~$ docker rmi gnostex-backend:latest
+Untagged: gnostex-backend:latest
+
+gnosticka@linux:~$ docker images
+REPOSITORY                               TAG                             IMAGE ID       CREATED         SIZE
+backend-app                              latest                          9ce344c390e4   11 hours ago    335MB
+
+
+/*
+docker ps
+shows only running containers
+
+Your error earlier said:
+
+container 447965ce88b7 is using its referenced image
+That means the container is stopped, not running.
+Stopped containers still hold a reference to the image, so Docker won’t let you delete the image yet.
+
+Show stopped containers
+Run:
+docker ps -a
+You’ll see something like:
+
+CONTAINER ID   IMAGE         STATUS                    NAMES
+447965ce88b7   backend-app   Exited (143) 5 mins ago   backend-app
+Remove the stopped container
+
+Now remove it:
+docker rm backend-app
+
+(or by ID)
+docker rm 447965ce88b7
+
+Now remove the image
+docker rmi backend-app:latest
+
+Command	Shows
+docker ps	running containers only
+docker ps -a	all containers (running + stopped)
+docker images	images
+
+*/
+
+gnosticka@linux:~$ docker rmi backend-app:latest
+Error response from daemon: conflict: unable to remove repository reference "backend-app:latest" (must force) - container 447965ce88b7 is using its referenced image 9ce344c390e4
+
+gnosticka@linux:~$ docker ps
+CONTAINER ID   IMAGE        COMMAND                  CREATED         STATUS        PORTS                                       NAMES
+8f2c6d596548   registry:2   "/entrypoint.sh /etc…"   14 months ago   Up 15 hours   0.0.0.0:5000->5000/tcp, :::5000->5000/tcp   registry
+
+gnosticka@linux:~$ docker ps -a
+CONTAINER ID   IMAGE                     COMMAND                  CREATED          STATUS                        PORTS                                                                                  NAMES
+447965ce88b7   backend-app               "java -jar /app/app.…"   27 minutes ago   Exited (143) 16 minutes ago                                                                                          backend-app
+8f2c6d596548   registry:2                "/entrypoint.sh /etc…"   14 months ago    Up 15 hours                   0.0.0.0:5000->5000/tcp, :::5000->5000/tcp                                              registry
+
+gnosticka@linux:~$ docker rm backend-app
+backend-app
+gnosticka@linux:~$ docker ps -a
+CONTAINER ID   IMAGE                     COMMAND                  CREATED          STATUS                       PORTS                                                                                  NAMES
+8f2c6d596548   registry:2                "/entrypoint.sh /etc…"   14 months ago    Up 15 hours                  0.0.0.0:5000->5000/tcp, :::5000->5000/tcp                                              registry
+
+
+
+gnosticka@linux:~$ docker images
+REPOSITORY                               TAG                             IMAGE ID       CREATED         SIZE
+backend-app                              latest                          9ce344c390e4   11 hours ago    335MB
+<none>                                   <none>                          4d811dc24daf   11 hours ago    630MB
+eclipse-temurin                          21-jdk                          bedd08f5f915   5 weeks ago     448MB
+eclipse-temurin                          21-jre                          2e463b829a56   5 weeks ago     287MB
+hello-world                              latest                          1b44b5a3e06a   4 months ago    10.1kB
+hello-app                                latest                          428b9a9956ea   14 months ago   791MB
+<none>                                   <none>                          5e371ca8b5ff   14 months ago   1.13GB
+icr.io/appcafe/open-liberty              full-java17-openj9-ubi          15fb3961abe1   14 months ago   1.09GB
+icr.io/appcafe/open-liberty              kernel-slim-java17-openj9-ubi   be6bf4d2909b   14 months ago   692MB
+localhost:5000/hello-spring-boot-jetty   latest                          bc6ba6c5d1f2   14 months ago   436MB
+hello-spring-boot-jetty                  latest                          bc6ba6c5d1f2   14 months ago   436MB
+registry                                 2                               75ef5b734af4   2 years ago     25.4MB
+openjdk                                  17-jdk-slim                     37cb44321d04   3 years ago     408MB
+gnosticka@linux:~$
+
+
+gnosticka@linux:~$ docker image prune
+WARNING! This will remove all dangling images.
+Are you sure you want to continue? [y/N] y
+Deleted Images:
+deleted: sha256:5e371ca8b5ff5797f24fd1f42ce59cf8bda063d84e5c9a7955f00afa9c24d131
+deleted: sha256:fad6f85e48c166ed20c26720945ea05e1e4cf4f8f98c8e80b7c175895211280c
+deleted: sha256:83ad60cf3aaae291e942af598e4b3442cb7ca3b9cdb318fdaf6fd72ad1649a6a
+deleted: sha256:61db6d646f1aafa37b3288408cbfc7c64ee2ebff4120ad48a98eddaf6c33bebe
+deleted: sha256:4d811dc24daf6f04d1d48054b9e607fae1a352342afcb464fd9664ae07d0013b
+deleted: sha256:c401f4201f50f123ae479276e1aa842b4590b70a6e9c93e5154e9871af87fc49
+deleted: sha256:554c66c4d5257322bc8b0a9a02bbd4ed17fb32ec71c2a6773c3d8ef7ab6f2b89
+deleted: sha256:43d3fe78d20c292596f6f870919ac0dcf43686b8736e75af36f258ec49a12cc2
+deleted: sha256:80425ae42e8deafcd23cfcbfac75f888e6f3aca464125e87d12f06ddb478d45c
+deleted: sha256:ecf3fc40d4a35ec3994d0ed725a12bbeb39d2ed3296c244ab312e03beee53ec8
+deleted: sha256:230d3afaaa4360d2a60ffd1391281db681b5b410e9f47b4c719ffcf7763cc2a6
+deleted: sha256:978245a254eb5982209fd3704b722d0060b1e9fe4a1f75f957caa1075d7032ad
+deleted: sha256:e5b002889a59baefe3b21290537dea86395a9606f9ba8195fc2fac36febf130a
+deleted: sha256:ccbdc782387e4be0424c925dc1ffd8cd31c54f455660a0d1d9990b04a227d5b5
+deleted: sha256:5dc51338ac359f58ae177f04c789fbdfa66caad5e85cb3a4dcf52d360882474e
+deleted: sha256:4862cad023462c0e099841ec8446388fb29a293e34de91b103bad241aa7f297e
+deleted: sha256:08d5ace6a10df25ee0b456b00f7890d79648179532f4f677ca5ab53f2d878bd6
+deleted: sha256:77f142e8770d8b1cc28e33f8f92bcc79d1d8c3fd635911b17dca3520d911d7f2
+
+Total reclaimed space: 227.2MB
+
+
+
+
+
+gnosticka@linux:~$ docker images
+REPOSITORY                               TAG                             IMAGE ID       CREATED         SIZE
+backend-app                              latest                          9ce344c390e4   11 hours ago    335MB
+eclipse-temurin                          21-jdk                          bedd08f5f915   5 weeks ago     448MB
+eclipse-temurin                          21-jre                          2e463b829a56   5 weeks ago     287MB
+hello-world                              latest                          1b44b5a3e06a   4 months ago    10.1kB
+hello-app                                latest                          428b9a9956ea   14 months ago   791MB
+icr.io/appcafe/open-liberty              full-java17-openj9-ubi          15fb3961abe1   14 months ago   1.09GB
+icr.io/appcafe/open-liberty              kernel-slim-java17-openj9-ubi   be6bf4d2909b   14 months ago   692MB
+hello-spring-boot-jetty                  latest                          bc6ba6c5d1f2   14 months ago   436MB
+localhost:5000/hello-spring-boot-jetty   latest                          bc6ba6c5d1f2   14 months ago   436MB
+registry                                 2                               75ef5b734af4   2 years ago     25.4MB
+openjdk                                  17-jdk-slim                     37cb44321d04   3 years ago     408MB
+gnosticka@linux:~$
+
+
+gnosticka@linux:~$ docker ps -a
+CONTAINER ID   IMAGE                     COMMAND                  CREATED          STATUS                       PORTS                                                                                  NAMES
+d03d8f4efaf4   hello-world               "/hello"                 42 minutes ago   Exited (0) 42 minutes ago                                                                                           vigilant_franklin
+38191c81464b   hello-world               "/hello"                 44 minutes ago   Exited (0) 44 minutes ago                                                                                           agitated_franklin
+5a1513be2de8   hello-world               "/hello"                 44 minutes ago   Exited (0) 44 minutes ago                                                                                           charming_galileo
+eab1211520e1   hello-world               "/hello"                 44 minutes ago   Exited (0) 44 minutes ago                                                                                           eager_williamson
+d60d438c2f5d   hello-app                 "/opt/ol/helpers/run…"   14 months ago    Exited (255) 14 months ago   0.0.0.0:9080->9080/tcp, :::9080->9080/tcp, 0.0.0.0:9443->9443/tcp, :::9443->9443/tcp   hello-app-container
+bac311aa6bfa   c3f4ac054889              "/opt/ol/helpers/run…"   14 months ago    Exited (143) 14 months ago                                                                                          springBootContainer
+b6cfcdbcb268   c73257c23fe0              "/opt/ol/helpers/run…"   14 months ago    Exited (130) 14 months ago                                                                                          agitated_volhard
+271621aa5faf   b4a9aa4502fd              "/opt/ol/helpers/run…"   14 months ago    Exited (130) 14 months ago                                                                                          charming_greider
+31f9a6c4b61d   b4a9aa4502fd              "/opt/ol/helpers/run…"   14 months ago    Exited (130) 14 months ago                                                                                          exciting_borg
+11a3860cb7c2   65197cca5f09              "/opt/ol/helpers/run…"   14 months ago    Exited (130) 14 months ago                                                                                          frosty_hofstadter
+8f2c6d596548   registry:2                "/entrypoint.sh /etc…"   14 months ago    Up 15 hours                  0.0.0.0:5000->5000/tcp, :::5000->5000/tcp                                              registry
+9c0c72fb704c   hello-spring-boot-jetty   "java -jar app.jar"      14 months ago    Exited (130) 14 months ago                                                                                          magical_bose
+
+
+gnosticka@linux:~$ docker container prune
+WARNING! This will remove all stopped containers.
+Are you sure you want to continue? [y/N] y
+Deleted Containers:
+d03d8f4efaf427ae8263b731b708fbfefd794f85ea4dda2d7ce26311ee235e9f
+38191c81464b80562d80691df032b5d06349df72ca217e043aaae782924579da
+5a1513be2de828302154de351d877c067dfd3b10deb275bd4464460844beaeab
+eab1211520e12141f342e042d3f440aff15d8241d9b240b47153bcd0ac92f6c1
+d60d438c2f5d658bf362134b11ed1a2f1169552f2e75dc82d2df628ce649eae8
+bac311aa6bfab07b13c7c1907ce3fcc37a90d4e24d95e6d1093df5e774691922
+b6cfcdbcb268ad1b863955740395bcd9729720306834d1a396748f34028c6aa3
+271621aa5faf62a8dc1755d32d418711cc0362c89b91dc276625ffde11928348
+31f9a6c4b61dd558a57d61bd7c8c072e7ad0cc5e1d465de02c77c9f5cecf6173
+11a3860cb7c2d19868329062e263734d2a9a0fe8fd99713aa08e9217c8eed663
+9c0c72fb704c8721e30b63cab4cc5e1f590dfe780799782add66a58a7bc02caf
+
+Total reclaimed space: 7.359MB
+gnosticka@linux:~$ docker ps -a
+CONTAINER ID   IMAGE        COMMAND                  CREATED         STATUS        PORTS                                       NAMES
+8f2c6d596548   registry:2   "/entrypoint.sh /etc…"   14 months ago   Up 15 hours   0.0.0.0:5000->5000/tcp, :::5000->5000/tcp   registry
+
+
+/*
+Pro DevOps rule of thumb
+Goal	Command
+Safe cleanup --	docker image prune
+Free real disk space --	docker image prune -a
+Full reset --	docker system prune -a
+Surgical cleanup --	docker rmi IMAGE
+*/
+
+```
+

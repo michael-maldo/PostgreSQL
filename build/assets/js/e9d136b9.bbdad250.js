@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkpostgresql=globalThis.webpackChunkpostgresql||[]).push([[4552],{7043:s=>{s.exports=JSON.parse('{"tag":{"label":"hello","permalink":"/docs/tags/hello","allTagsPath":"/docs/tags","count":1,"items":[{"id":"Test/test","title":"MD TEST","description":"my hello page description","permalink":"/docs/Test/"}],"unlisted":false}}')}}]);
