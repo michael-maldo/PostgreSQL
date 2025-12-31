@@ -1,1 +1,0 @@
-"use strict";(globalThis.webpackChunkpostgresql=globalThis.webpackChunkpostgresql||[]).push([[6660],{1544:s=>{s.exports=JSON.parse('{"tag":{"label":"set-up","permalink":"/docs/tags/set-up","allTagsPath":"/docs/tags","count":1,"items":[{"id":"Docker/Intro","title":"Intro","description":"Introduction to Docker","permalink":"/docs/Docker/Intro"}],"unlisted":false}}')}}]);

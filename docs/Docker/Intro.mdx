@@ -4,11 +4,232 @@ title: Intro
 description: "Introduction to Docker"
 tags:
 - docker
-- set-up
+- stop / start
 ---
 
 # Intro
 
 ## Ops
+
+### docker version
+command to test that the client and daemon (server) are running and talking to each other
+```bash  title="bash"
+
+// this shows client is talking to the server
+# highlight-next-line
+$ docker version
+
+# highlight-next-line
+Client:
+ Version:           24.0.5
+ API version:       1.43
+ Go version:        go1.22.0
+ Git commit:        %{shortcommit_cli}
+ Built:             Sun Feb 11 23:35:47 2024
+ OS/Arch:           linux/amd64
+ Context:           default
+
+# highlight-next-line
+Server:
+ Engine:
+  Version:          24.0.5
+  API version:      1.43 (minimum version 1.12)
+  Go version:       go1.22.0
+  Git commit:       %{shortcommit_moby}
+  Built:            Sun Feb 11 23:35:47 2024
+  OS/Arch:          linux/amd64
+  Experimental:     false
+ containerd:
+  Version:          1.6.23
+  GitCommit:
+ runc:
+  Version:          1.3.0
+  GitCommit:
+ docker-init:
+  Version:          0.19.0
+  GitCommit:
+
+// stopping docker - shows server not running
+# highlight-next-line
+$ sudo systemctl stop docker.service docker.socket containerd
+
+# highlight-next-line
+@:~$ docker version
+
+# highlight-next-line
+Client:
+ Version:           24.0.5
+ API version:       1.43
+ Go version:        go1.22.0
+ Git commit:        %{shortcommit_cli}
+ Built:             Sun Feb 11 23:35:47 2024
+ OS/Arch:           linux/amd64
+ Context:           default
+# highlight-next-line
+Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
+
+```
+### docker images
+<b>Docker image</b> is like an object that contains an OS filesystem, an application, and all application dependencies.<br/>
+An image gets its own <b>unique ID</b>.<br/>
+When referencing images, you can refer to them using either IDs or names.
+```bash title="bash"
+// currently no images
+# highlight-next-line
+$ docker images
+REPOSITORY   TAG       IMAGE ID   CREATED   SIZE
+
+// Getting images onto your Docker host is called pulling
+// sample pull of ubuntu image
+# highlight-next-line
+$ docker pull ubuntu:latest
+latest: Pulling from library/ubuntu
+20043066d3d5: Pull complete
+Digest: sha256:c35e29c9450151419d9448b0fd75374fec4fff364a27f176fb458d472dfc9e54
+Status: Downloaded newer image for ubuntu:latest
+docker.io/library/ubuntu:latest
+
+// docker after pull - showing ubuntu image
+# highlight-next-line
+$ docker images
+REPOSITORY   TAG       IMAGE ID       CREATED        SIZE
+ubuntu       latest    c3a134f2ace4   2 months ago   78.1MB
+
+```
+### docker containers
+<b>docker run</b> command to launch a container from the <b>ubuntu</b> image<br/>
+The <b>-it</b> flags tell Docker<br/>
+to make the container interactive<br/>
+and to attach the current shell to the container’s terminal<br/>
+
+```bash title="bash"
+// issuing some commands inside the running ubuntu image container
+# highlight-next-line
+$ docker run -it ubuntu:latest /bin/bash
+root@a1bb606e08be:/#
+root@a1bb606e08be:/#
+root@a1bb606e08be:/# hostname
+a1bb606e08be
+root@a1bb606e08be:/# uname -a
+Linux a1bb606e08be 6.14.5-100.fc40.x86_64 #1 SMP PREEMPT_DYNAMIC Fri May  2 14:22:13 UTC 2025 x86_64 x86_64 x86_64 GNU/Linux
+root@a1bb606e08be:/# date
+Wed Dec 31 13:57:37 UTC 2025
+root@a1bb606e08be:/# whoami
+root
+root@a1bb606e08be:/# ps
+    PID TTY          TIME CMD
+      1 pts/0    00:00:00 bash
+     13 pts/0    00:00:00 ps
+root@a1bb606e08be:/#
+
+```
+
+### Exit container without terminating
+Press <b>Ctrl-PQ</b> to exit the container without terminating it. <br/>
+Exit from the container without killing it. <br/>
+<b>docker ps</b> command - to see all running containers <br/>
+
+```bash title="bash"
+
+// docker ps showing active running containers
+// below showing the ubuntu image container running - 26 minutes
+$ docker ps
+CONTAINER ID   IMAGE           COMMAND       CREATED          STATUS          PORTS     NAMES
+# highlight-next-line
+a1bb606e08be   ubuntu:latest   "/bin/bash"   26 minutes ago   Up 26 minutes             youthful_vaughan
+
+```
+
+### Connecting to running containers
+
+```bash title="bash"
+// using CONTAINER NAME
+$ docker exec -it youthful_vaughan bash
+root@a1bb606e08be:/#
+root@a1bb606e08be:/# read escape sequence
+$
+
+// using CONTAINER ID
+$ docker exec -it a1bb606e08be bash
+root@a1bb606e08be:/#
+root@a1bb606e08be:/#
+root@a1bb606e08be:/# read escape sequence
+$
+$
+
+// using shortcut - first few characters unique part of the CONTAINER ID
+// as long as it is unique
+$ docker exec -it a1 bash
+root@a1bb606e08be:/#
+root@a1bb606e08be:/# read escape sequence
+$
+$
+
+```
+
+### Stopping / Killing running containers
+Stop the container and kill it <br/>
+using the <b>docker stop CONTAINER_ID | NAME</b> -- to stop a running container<br/>
+and <b>docker rm CONTAINER_ID | NAME</b> command to remove a container -- only after it has stopped<br/>
+substitute the names/IDs of the containers.<br/>
+
+After container is stopped<br/>
+Remove Images you want deleted<br/>
+Use <b>docker rmi REPOSITORY[:TAG] | IMAGE_ID</b><br/>
+
+
+```bash title="bash"
+// check running containers
+$ docker ps
+CONTAINER ID   IMAGE           COMMAND       CREATED             STATUS             PORTS     NAMES
+a1bb606e08be   ubuntu:latest   "/bin/bash"   About an hour ago   Up About an hour             youthful_vaughan
+$
+
+// unsuccessful removal of still running container
+$ docker rm a1bb606e08be
+Error response from daemon: You cannot remove a running container a1bb606e08bedc6a05b8696f08d7790763baa60426d7220359d5115bb860af45. Stop the container before attempting removal or force remove
+$
+$
+
+// stoping a running container
+$ docker stop a1bb606e08be
+a1bb606e08be
+$
+
+// docker ps  -- show container removed from the list
+$ docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+
+// docker ps -a -- still showing container
+$ docker ps -a
+CONTAINER ID   IMAGE           COMMAND       CREATED             STATUS                        PORTS     NAMES
+a1bb606e08be   ubuntu:latest   "/bin/bash"   About an hour ago   Exited (137) 22 seconds ago             youthful_vaughan
+$
+
+// safe - successful removal of a stopped container
+$ docker rm a1bb606e08be
+a1bb606e08be
+$
+$ docker ps -a
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+$ docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+$
+$ docker images
+REPOSITORY   TAG       IMAGE ID       CREATED        SIZE
+ubuntu       latest    c3a134f2ace4   2 months ago   78.1MB
+$
+$
+
+// image can be removed only after the container is stopped / removed
+$ docker rmi ubuntu
+Untagged: ubuntu:latest
+Untagged: ubuntu@sha256:c35e29c9450151419d9448b0fd75374fec4fff364a27f176fb458d472dfc9e54
+Deleted: sha256:c3a134f2ace4f6d480733efcfef27c60ea8ed48be1cd36f2c17ec0729775b2c8
+Deleted: sha256:e8bce0aabd687e9ee90e0bada33884f40b277196f72aac9934357472863a80ae
+$
+
+
+```
 
 ## Dev
