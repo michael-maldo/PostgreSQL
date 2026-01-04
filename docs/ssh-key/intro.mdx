@@ -1,0 +1,46 @@
+---
+sidebar_position: 1
+---
+
+# ssh-key setup
+The correct fix (clean + professional)
+
+Do not try to recover or guess.
+
+## ✅ Generate a brand-new CI key (once)
+ssh-keygen -t ed25519 -f ~/.ssh/github_ci_deploy -C "github-ci-deploy"
+
+## ✅ Add public key to VPS
+cat ~/.ssh/github_ci_deploy.pub >> ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
+
+## ✅ Add private key to GitHub Secrets
+
+Secret name:
+
+SERVER_SSH_KEY
+
+
+Value = contents of:
+
+~/.ssh/github_ci_deploy
+
+## ✅ Test locally (important)
+ssh -i ~/.ssh/github_ci_deploy deploy@YOUR_VPS
+
+
+No password prompt = correct.
+
+## 🔐 Lessons (this is senior-level knowledge)
+
+SSH keys are single-source of truth
+
+Re-running ssh-keygen -f destroys identity
+
+CI keys should:
+
+Have unique filenames
+
+Be generated once
+
+Be documented

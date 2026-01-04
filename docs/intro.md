@@ -17,6 +17,128 @@ $ sudo -u postgres psql -c "SHOW config_file;"
 $ sudo -u postgres psql -c "SHOW hba_file;"
 ```
 
+## initial setup
+
+### 1️⃣ Connect as the postgres superuser
+
+On the server:
+
+sudo -u postgres psql
+
+
+You should see:
+
+postgres=#
+
+### 2️⃣ Create a new PostgreSQL user (role)
+Basic user with password
+CREATE USER app_user WITH PASSWORD 'strong_password';
+
+
+PostgreSQL calls users roles — same thing.
+
+### 3️⃣ Create a database (optional but common)
+CREATE DATABASE app_db OWNER app_user;
+
+
+This automatically gives app_user full rights on app_db.
+
+### 4️⃣ Grant privileges (if DB already exists)
+
+If the database already exists:
+
+GRANT ALL PRIVILEGES ON DATABASE app_db TO app_user;
+
+### 5️⃣ Connect to the database and grant schema permissions (IMPORTANT)
+
+PostgreSQL permissions are schema-based.
+This step is often missed and causes “permission denied” errors.
+
+\c app_db
+
+
+Then:
+
+GRANT USAGE, CREATE ON SCHEMA public TO app_user;
+
+
+For existing tables/sequences:
+
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO app_user;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO app_user;
+
+
+For future tables (recommended):
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+GRANT ALL ON TABLES TO app_user;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+GRANT ALL ON SEQUENCES TO app_user;
+
+6️⃣ Verify the user
+
+List roles:
+
+\du
+
+
+Test login:
+
+psql -U app_user -d app_db -h localhost
+
+### 7️⃣ (Optional) Create a read-only user
+
+Useful for reporting or debugging.
+
+CREATE USER app_readonly WITH PASSWORD 'readonly_pw';
+
+GRANT CONNECT ON DATABASE app_db TO app_readonly;
+GRANT USAGE ON SCHEMA public TO app_readonly;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO app_readonly;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+GRANT SELECT ON TABLES TO app_readonly;
+
+
+
+### 8️⃣ Spring Boot example (since you use it)
+spring:
+datasource:
+url: jdbc:postgresql://localhost:5432/app_db
+username: app_user
+password: strong_password
+
+TL;DR (copy/paste version)
+CREATE USER app_user WITH PASSWORD 'strong_password';
+CREATE DATABASE app_db OWNER app_user;
+
+\c app_db
+GRANT USAGE, CREATE ON SCHEMA public TO app_user;
+GRANT ALL ON ALL TABLES IN SCHEMA public TO app_user;
+GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO app_user;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+GRANT ALL ON TABLES TO app_user;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+GRANT ALL ON SEQUENCES TO app_user;
+
+### 🔐 Security best practices (important for prod)
+
+❌ Do NOT use postgres user in applications
+
+✅ One DB user per app/service
+
+✅ Strong passwords
+
+✅ Restrict DB access via firewall / pg_hba.conf
+
+❌ Avoid SUPERUSER unless absolutely required
+
+
+
+
 ## changing postgresql user password
 ```jsx title="bash"
 ALTER USER postgres WITH PASSWORD 'new_strong_password';

@@ -96,6 +96,7 @@ REPOSITORY   TAG       IMAGE ID       CREATED        SIZE
 ubuntu       latest    c3a134f2ace4   2 months ago   78.1MB
 
 ```
+
 ### docker containers
 <b>docker run</b> command to launch a container from the <b>ubuntu</b> image<br/>
 The <b>-it</b> flags tell Docker<br/>
@@ -233,3 +234,133 @@ $
 ```
 
 ## Dev
+
+### clone an app from a Git repo
+
+```bash title="bash"
+
+$ git clone https://github.com/nigelpoulton/psweb.git
+Cloning into 'psweb'...
+remote: Enumerating objects: 63, done.
+remote: Counting objects: 100% (34/34), done.
+remote: Compressing objects: 100% (22/22), done.
+remote: Total 63 (delta 13), reused 25 (delta 9), pack-reused 29
+Receiving objects: 100% (63/63), 13.29 KiB | 4.43 MiB/s, done.
+Resolving deltas: 100% (21/21), done.
+
+```
+
+
+### inspect its Dockerfile
+
+```bash title="bash"
+
+$ cd psweb
+$ ls -l
+total 40
+-rw-r--r--@ 1 ubuntu ubuntu
+-rw-r--r--@ 1 ubuntu ubuntu
+-rw-r--r--@ 1 ubuntu ubuntu
+-rw-r--r-- 1 ubuntu ubuntu
+-rw-r--r--@ 1 ubuntu ubuntu
+drwxr-xr-x 4 ubuntu ubuntu
+drwxr-xr-x 3 ubuntu ubuntu
+338 24 Apr 19:29 Dockerfile
+396 24 Apr 19:32 README.md
+341 24 Apr 19:29 app.js
+216 24 Apr 19:29 circle.yml
+377 24 Apr 19:36 package.json
+128 24 Apr 19:29 test
+96 24 Apr 19:29 views
+
+$ cat Dockerfile
+FROM alpine
+LABEL maintainer="nigelpoulton@hotmail.com"
+RUN apk add --update nodejs nodejs-npm
+COPY . /src
+WORKDIR /src
+RUN npm install
+EXPOSE 8080
+ENTRYPOINT ["node", "./app.js"]
+
+
+
+```
+
+### containerize and run as a container.
+
+```
+
+$ docker build -t test:latest .
+[+] Building 36.2s (11/11) FINISHED
+=> [internal] load .dockerignore
+=> => transferring context: 2B
+=> [internal] load build definition from Dockerfile
+<Snip>
+=> => naming to docker.io/library/test:latest
+=> => unpacking to docker.io/library/test:latest
+0.0s
+0.0s
+0.0s
+0.0s
+0.7s
+
+$ docker images
+REPO
+TAG
+test
+latest
+IMAGE ID
+1ede254e072b
+CREATED
+7 seconds ago
+SIZE
+154MB
+
+$ docker run -d \
+--name web1 \
+--publish 8080:8080 \
+test:latest
+
+```
+
+
+### new commands
+docker events  --- see docker restarts, kills, exits in real time. <br/>
+docker logs -f gnostex-backend -- equivalent of tail -f logs <br/>
+docker run -d --rm  --name gnostex-backend-api --add-host=host.docker.internal:host-gateway  -p 8080:8080  -e SPRING_PROFILES_ACTIVE=dev  -e DB_URL=jdbc:postgresql://host.docker.internal:5432/gnostexdb  -e DB_USERNAME=gnostex  -e DB_PASSWORD=gnostex  gnostex-backend-api <br/>
+--add-host=host.docker.internal:host-gateway -- Map host.docker.internal to the Linux host<br/>
+try running postgresql also as a container <br/>
+docker build -t gnostex-backend-api . -- docker build <br/>
+docker run -it --rm  --entrypoint sh  gnostex-backend-api  -- for exploring the image<br/>
+
+### retagging images
+```bash title="bash"
+docker images
+REPOSITORY                        TAG       IMAGE ID       SIZE
+gnostex-backend-api                latest    def456
+gnostex-backend-api                abc123    abc123
+
+docker tag abc123 gnostex-backend-api:latest
+
+docker images
+REPOSITORY                        TAG       IMAGE ID       SIZE
+gnostex-backend-api                latest    abc123
+gnostex-backend-api                def456    def456
+gnostex-backend-api                abc123    abc123
+
+// Remove old latest tag reference
+docker rmi gnostex-backend-api:latest
+
+// Tags are just labels, not copies of images.
+// You can move tags freely — this is how you can roll back latest to a previous build.
+// Useful for manual rollback on VPS:
+
+docker stop gnostex-backend-api
+docker rm gnostex-backend-api
+docker tag abc123 gnostex-backend-api:latest
+docker run -d --name gnostex-backend-api -p 8080:8080 gnostex-backend-api:latest
+```
+
+
+
