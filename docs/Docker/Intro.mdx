@@ -326,6 +326,7 @@ test:latest
 
 
 ### new commands
+```
 docker events  --- see docker restarts, kills, exits in real time. <br/>
 docker logs -f gnostex-backend -- equivalent of tail -f logs <br/>
 docker run -d --rm  --name gnostex-backend-api --add-host=host.docker.internal:host-gateway  -p 8080:8080  -e SPRING_PROFILES_ACTIVE=dev  -e DB_URL=jdbc:postgresql://host.docker.internal:5432/gnostexdb  -e DB_USERNAME=gnostex  -e DB_PASSWORD=gnostex  gnostex-backend-api <br/>
@@ -333,6 +334,13 @@ docker run -d --rm  --name gnostex-backend-api --add-host=host.docker.internal:h
 try running postgresql also as a container <br/>
 docker build -t gnostex-backend-api . -- docker build <br/>
 docker run -it --rm  --entrypoint sh  gnostex-backend-api  -- for exploring the image<br/>
+curl -f http://localhost:8080/actuator/health
+
+{"status":"UP","components":{"db":{"status":"UP","details":{"database":"PostgreSQL","validationQuery":"isValid()"}},"diskSpace":{"status":"UP","details":{"total":206900281344,"free":195738656768,"threshold":10485760,"path":"/app/.","exists":true}},"ping":{"status":"UP"},"ssl":{"status":"UP","details":{"validChains":[],"invalidChains":[]}}}}
+
+docker inspect
+docker inspect --format='{{.State.Health.Status}}' gnostex-backend-api
+```
 
 ### retagging images
 ```bash title="bash"
