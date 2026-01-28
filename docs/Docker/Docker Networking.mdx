@@ -4,6 +4,125 @@ title: Docker Networking
 description: Docker Networking
 tags:
 - docker
+- networking
 ---
 
 # Docker Networking
+
+
+## none
+
+## host
+
+## bridge
+
+### single-host bridge networks
+- spans on a single docker host
+- can only connect containers on a single Docker host
+-  in Linux Docker it is created with the built-in `bridge` driver
+
+<b>bridge</b> - default single-host bridge network<br/>
+by default all new containers will be attached to this
+`--network` flag to override<br/>
+```
+
+$ docker network ls
+NETWORK ID     NAME      DRIVER    SCOPE
+# highlight-next-line
+afb76a4d8db2   bridge    bridge    local
+1e7aa8ab6ae5   host      host      local
+f84b45601af7   none      null      local
+
+```
+
+low level detail of the Docker network bridge
+```
+$ docker inspect bridge
+[
+    {
+        "Name": "bridge",
+        "Id": "afb76a4d8db2a0d31945d4c39795fbf89395173d084fdd1c2dc80121ca951cb5",
+        "Created": "2026-01-16T10:07:54.094156761+11:00",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": null,
+            "Config": [
+                {
+                    "Subnet": "172.17.0.0/16",
+                    "Gateway": "172.17.0.1"
+                }
+            ]
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Containers": {},
+        "Options": {
+            "com.docker.network.bridge.default_bridge": "true",
+            "com.docker.network.bridge.enable_icc": "true",
+            "com.docker.network.bridge.enable_ip_masquerade": "true",
+            "com.docker.network.bridge.host_binding_ipv4": "0.0.0.0",
+# highlight-next-line
+            "com.docker.network.bridge.name": "docker0",
+            "com.docker.network.driver.mtu": "1500"
+        },
+        "Labels": {}
+    }
+]
+
+```
+
+using standard linux utility to inspect docker0 bridge<br/>
+the <b>default bridge network</b> on Linux-based Docker hosts,<br/>
+maps to the underlying <b>Linux bridge</b> in the kernel docker0<br/>
+```
+$ ip link show docker0
+5: docker0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN mode DEFAULT group default
+link/ether 02:42:41:59:03:5d brd ff:ff:ff:ff:ff:ff
+
+```
+
+testing netwoking from 2 ubuntu containers inside a sinngle Docker host
+```bash
+$ docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED          STATUS          PORTS     NAMES
+8a5e1336f240   ubuntu    "bash"    10 minutes ago   Up 10 minutes             c2
+94d75afe7266   ubuntu    "bash"    10 minutes ago   Up 10 minutes             c1
+
+# run and connect to c1, c2 ubuntu containers
+# install ip and ping commands on these containers
+# apt-get update && apt-get -y iproute2 && apt-get -y iputils-ping
+
+
+
+```
+
+## overlay
+
+## macvlan
+
+## ipvlan
+
+## commands
+```bash
+# list docker networks
+docker network ls
+docker inspect bridge
+ip link show docker0
+
+#run on host & container
+#shows cotaniner and veth interface mapping
+ip link
+
+#show
+bridge fdb show br docker0
+
+
+```

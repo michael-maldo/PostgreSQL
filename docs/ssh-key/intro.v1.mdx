@@ -1,0 +1,775 @@
+in intellij -- i am using this --- git@github.com:michael-maldo/docker-notes.git
+
+That string is an SSH Git URL.
+
+git@github.com:michael-maldo/docker-notes.git
+
+
+It means:
+
+git@github.com
+→ connect to GitHub using SSH, as user git
+
+michael-maldo/docker-notes → owner + repository name
+
+.git → the Git repository endpoint
+
+So in IntelliJ (or any Git client), this implies:
+
+You are authenticating via SSH keys, not username/password.
+
+Your machine must have:
+
+an SSH key (~/.ssh/id_rsa or id_ed25519)
+
+the public key added to GitHub → Settings → SSH keys
+
+Practical implications (important)
+1. No browser login needed
+
+Once SSH is set up:
+
+git pull
+
+git push
+
+IntelliJ sync
+
+→ all work without prompts.
+
+2. This is different from HTTPS
+
+The HTTPS version would be:
+
+https://github.com/michael-maldo/docker-notes.git
+
+
+That one requires:
+
+either GitHub token
+
+or browser auth popups
+
+SSH is better for DevOps workflows, CI/CD, servers, VPS, etc.
+
+How IntelliJ uses it
+
+When you clone with that URL in IntelliJ:
+
+It runs essentially:
+
+git clone git@github.com:michael-maldo/docker-notes.git
+
+
+IntelliJ just delegates to your system ssh.
+
+If something breaks, it’s not an IntelliJ problem, it’s almost always:
+
+ssh -T git@github.com
+
+
+If that fails → SSH setup issue.
+
+Very DevOps-relevant concept
+
+This is the exact same mechanism you’ll use for:
+
+GitHub Actions runners
+
+CI servers
+
+Kubernetes build agents
+
+VPS automation
+
+No passwords, just keys.
+
+Mental model (simple)
+
+Think of it as:
+
+“Log into GitHub as my machine instead of my browser.”
+
+Your laptop/VM is the identity, not you.
+
+That’s why SSH Git URLs are the professional default.
+
+how to setup sshkey access with github?
+
+This is one of those core DevOps skills — once you do this once, you’ll use it everywhere (laptops, VPS, CI runners, cloud VMs).
+
+I’ll give you the clean, modern way (ED25519).
+
+1. Check if you already have a key
+ls -la ~/.ssh
+
+
+If you see something like:
+
+id_ed25519 and id_ed25519.pub → you already have one
+
+id_rsa and id_rsa.pub → older but still works
+
+If not, generate one.
+
+2. Generate a new SSH key
+ssh-keygen -t ed25519 -C "michael@github"
+
+
+Press Enter for:
+
+file location (default is fine)
+
+passphrase (recommended, but optional)
+
+This creates:
+
+~/.ssh/id_ed25519      (private key)
+~/.ssh/id_ed25519.pub  (public key)
+
+3. Start ssh-agent and load key
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+
+
+Now your key is in memory.
+
+4. Add public key to GitHub
+
+Copy it:
+
+cat ~/.ssh/id_ed25519.pub
+
+
+Then:
+
+GitHub →
+Profile pic → Settings → SSH and GPG keys →
+New SSH key
+
+Title: Laptop / VPS / Work PC
+
+Key type: Authentication
+
+Paste the key
+
+5. Test it
+ssh -T git@github.com
+
+
+You should see:
+
+Hi michael-maldo! You've successfully authenticated...
+
+
+No password. Pure key-based auth.
+
+6. Use SSH URLs in IntelliJ
+
+Clone with:
+
+git@github.com:michael-maldo/docker-notes.git
+
+
+or convert existing repo:
+
+git remote set-url origin git@github.com:michael-maldo/docker-notes.git
+
+Common real-world issues
+🔹 “Permission denied (publickey)”
+
+Usually means:
+
+key not added to GitHub
+
+ssh-agent not running
+
+wrong key loaded
+
+Check:
+
+ssh-add -l
+
+🔹 Multiple machines (laptop + VPS + cloud)
+
+Each machine should have its own key.
+
+On VPS:
+
+ssh-keygen -t ed25519 -C "vps-prod"
+
+
+Add that key to GitHub as well.
+
+This is exactly how:
+
+CI/CD runners
+
+Kubernetes nodes
+
+build servers
+
+authenticate.
+
+Pro tip (very DevOps)
+
+Create ~/.ssh/config:
+
+Host github.com
+User git
+IdentityFile ~/.ssh/id_ed25519
+
+
+Now SSH is deterministic even with multiple keys.
+
+Why this matters for your career
+
+For someone targeting Cloud / Platform / DevOps roles like you:
+
+SSH keys are used for:
+
+GitHub
+
+GitLab
+
+Bitbucket
+
+Ansible
+
+Terraform
+
+CI agents
+
+Kubernetes nodes
+
+Cloud bastion hosts
+
+It’s basically the Unix equivalent of your passport.
+
+Once you understand SSH keys, half of “mysterious infra auth problems” disappear.
+
+what if i lose the private key on my local machine
+
+Great question — and this is exactly the right level of paranoia for DevOps 😄
+
+Short answer:
+
+If you lose your private key, nothing breaks permanently — you just generate a new one.
+
+There is no way to recover a lost private key. By design.
+
+What actually happens if you lose it?
+
+Say your laptop dies and you lose:
+
+~/.ssh/id_ed25519
+
+
+But GitHub still has your public key.
+
+Result:
+
+You can no longer authenticate from that machine.
+
+GitHub is still secure.
+
+Nobody can “recreate” your private key.
+
+This is good security.
+
+The recovery process (normal workflow)
+
+From a new machine:
+
+1. Generate new key
+ssh-keygen -t ed25519 -C "new-laptop"
+
+2. Add new public key to GitHub
+
+GitHub → Settings → SSH keys → New key
+
+3. Remove old key (optional but recommended)
+
+Delete the lost one from GitHub.
+
+Done. You're back in business.
+
+Important: GitHub is NOT tied to a single key
+
+You can have:
+
+5 machines
+
+10 keys
+
+1 GitHub account
+
+Each key is independent.
+
+This is how companies manage:
+
+dev laptops
+
+CI runners
+
+prod servers
+
+Worst case scenario
+
+The only real danger is:
+
+If someone steals your private key and your machine is compromised.
+
+Then they can push code as you.
+
+Which is why:
+
+passphrases matter
+
+removing old keys matters
+
+one key per machine matters
+
+Professional-grade practices (what seniors do)
+1. One key per device
+
+Never reuse the same key across machines.
+
+Good:
+
+Laptop → id_ed25519_laptop
+VPS → id_ed25519_vps
+CI → id_ed25519_ci
+
+2. Descriptive names on GitHub
+
+Instead of:
+
+id_ed25519
+
+Use:
+
+MacBook-Pro-2024
+AWS-Build-Runner
+Home-PC
+
+So when something dies → you know what to delete.
+
+3. Passphrase + ssh-agent
+
+Your private key on disk is encrypted.
+Agent decrypts it in memory only.
+
+This protects you even if disk is stolen.
+
+4. For servers: no backups of private keys
+
+Never:
+
+email them
+
+put them in Dropbox
+
+commit them (obviously)
+
+If a server is destroyed:
+
+generate a new key
+
+add it to GitHub
+
+move on
+
+This is the intended lifecycle.
+
+Mental model (important)
+
+Think of SSH keys like physical locks:
+
+Public key = lock on the door (GitHub)
+
+Private key = your key
+
+Lose the key?
+→ Replace the lock.
+→ Make a new key.
+
+You don't panic.
+You rotate credentials.
+
+That’s literally how real infrastructure works.
+
+Why this is actually good news
+
+Because in real cloud work:
+
+Instances are ephemeral
+
+CI runners are disposable
+
+Laptops get replaced
+
+Containers die constantly
+
+SSH keys are designed for loss, rotation, and renewal.
+
+If losing a key were catastrophic, modern cloud would be impossible.
+
+One-liner summary
+
+Losing your private key is not a disaster.
+It’s just a credential rotation event.
+Generate a new one, add it, delete the old one, continue life.
+
+can the public key be used by other machines?
+
+Yes — but not in the way people often think.
+
+Short answer:
+
+The public key can be copied to any number of machines, but it is useless without the matching private key.
+
+What the public key actually does
+
+The public key is just:
+
+“I will accept logins from whoever proves they own the matching private key.”
+
+It’s a lock, not a key.
+
+Anyone can:
+
+see it
+
+copy it
+
+store it
+
+publish it
+
+And it gives them zero power.
+
+Can other machines use my public key?
+
+They can store it, yes.
+They cannot authenticate with it.
+
+Because authentication requires:
+
+public key (on GitHub)
++
+private key (on your machine)
+
+
+Without the private key:
+→ mathematically impossible to log in.
+
+Typical real-world layouts
+GitHub side (server)
+
+Stores:
+
+id_ed25519.pub
+
+Your laptop
+
+Stores:
+
+id_ed25519   (secret)
+
+
+When you run:
+
+git push
+
+
+GitHub sends a challenge:
+Your machine signs it with the private key.
+GitHub verifies with the public key.
+
+At no point is the private key transmitted.
+
+Important implication (security)
+
+This is why it’s safe to:
+
+paste public keys on websites
+
+commit them in repos
+
+send them in Slack
+
+And why it’s catastrophic to leak:
+
+~/.ssh/id_ed25519
+
+DevOps best practice (this matters)
+
+Even though you could:
+
+copy the same private key to 5 machines
+
+You should never do this.
+
+Because:
+
+you lose traceability
+
+you can't revoke one device
+
+one compromise breaks all
+
+Instead:
+
+Machine	Key
+Laptop	id_ed25519_laptop
+VPS	id_ed25519_vps
+CI runner	id_ed25519_ci
+
+All have different private keys.
+All public keys live on GitHub.
+
+Subtle but powerful concept
+
+Public keys are often treated as:
+
+identities of machines
+
+Not people.
+
+In real infra:
+
+GitHub doesn't know "Michael"
+
+It knows "this cryptographic entity is allowed"
+
+That's why SSH scales to:
+
+millions of servers
+
+zero shared secrets
+
+no passwords
+
+Final mental model
+
+Public key = padlock
+Private key = the only physical key
+
+You can give everyone the padlock.
+Only one person can open it.
+
+so if you will multiple private keys -- thenm that corresponds to multiple public keys -- as key pairs
+
+Exactly. 💯
+You’ve got it.
+
+Each private key always has exactly one matching public key.
+That pair is a cryptographic identity.
+
+So:
+
+1 private key → 1 public key → 1 identity
+
+5 private keys → 5 public keys → 5 identities
+
+These are called key pairs.
+
+How this looks in practice
+
+On disk:
+
+~/.ssh/id_ed25519_laptop      (private)
+~/.ssh/id_ed25519_laptop.pub  (public)
+
+~/.ssh/id_ed25519_vps
+~/.ssh/id_ed25519_vps.pub
+
+
+On GitHub:
+
+MacBook-Pro-2024
+AWS-VPS
+CI-Runner
+
+
+Each line is one public key.
+
+This is why SSH is so powerful
+
+You are not logging in as:
+
+michael / password
+
+You are logging in as:
+
+cryptographic entity #A7F3C9...
+
+Which happens to be on your laptop.
+
+Important invariant (never breaks)
+
+You can derive the public key from the private key.
+You can NEVER derive the private key from the public key.
+
+One-way math.
+
+That’s the entire security model.
+
+Advanced but very real DevOps detail
+
+You can even regenerate a public key from a private one:
+
+ssh-keygen -y -f id_ed25519_laptop > id_ed25519_laptop.pub
+
+
+Meaning:
+
+private key is the source of truth
+
+public key is just a projection
+
+Why seniors insist on one key per machine
+
+Because a key pair = identity.
+
+So if:
+
+a laptop is stolen → revoke only that key
+
+a CI runner is compromised → revoke only that key
+
+a VPS is destroyed → delete only that key
+
+Zero blast radius.
+
+This maps perfectly to cloud concepts
+
+SSH key pairs are basically:
+
+AWS IAM users (but simpler)
+
+GCP service accounts (but local)
+
+Kubernetes cert identities
+
+mTLS certificates
+
+Same pattern:
+
+one identity = one key pair
+
+One-liner that’s worth memorising
+
+Multiple private keys ⇒ multiple public keys ⇒ multiple identities.
+One key pair = one cryptographic “user”.
+
+at the end of the day --- it is having idividual acoounts -- on ssh keys
+
+Yes — that’s a very good way to think about it. And in fact, that’s exactly how modern systems treat it.
+
+SSH keys are basically individual accounts, just without usernames and passwords.
+
+The real model (what’s actually happening)
+
+In old systems:
+
+username + password = identity
+
+
+In modern systems:
+
+private key = identity
+public key = account record
+
+
+There is no “user” in the human sense.
+There is only:
+
+“This cryptographic entity is allowed.”
+
+Why this is even better than accounts
+
+Traditional accounts:
+
+need password resets
+
+can be phished
+
+reused everywhere
+
+stored on servers (hashed, but still)
+
+SSH identities:
+
+never transmit secrets
+
+cannot be brute-forced
+
+cannot be guessed
+
+live only on the client
+
+The server (GitHub, Linux, CI) only stores:
+
+a list of trusted public keys
+
+
+That’s it.
+
+This is literally how cloud works
+
+When you:
+
+ssh ubuntu@ec2-instance
+
+GitHub Actions deploy
+
+Kubernetes node joins cluster
+
+Terraform talks to cloud API
+
+They are not users.
+
+They are:
+
+machine identities with key pairs
+
+Why this mindset is important for you (DevOps)
+
+Because once you see SSH keys as “accounts”, everything clicks:
+
+Concept	Old world	Modern world
+Login	password	private key
+Account	user	key pair
+Revoke access	disable user	delete public key
+Audit	who logged in	which key was used
+Zero trust	impossible	native
+Even more precise mental model
+
+SSH key = service account
+
+Not human.
+Not personal.
+Not emotional.
+
+Just:
+
+a cryptographic actor with permissions.
+
+This is why infra feels different from app dev
+
+In app dev you think:
+
+users, sessions, cookies
+
+In infra you think:
+
+identities, trust, keys, certificates
+
+No humans involved.
+
+One sentence that sums it up
+
+SSH keys are individual accounts,
+but the “person” is a machine, not you.+--++++
