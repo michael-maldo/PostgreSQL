@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="en" dir="ltr" class="docs-wrapper plugin-docs plugin-id-default docs-version-current docs-doc-page docs-doc-id-ssh-key/intro.v1" data-has-hydrated="false">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Docusaurus v3.9.2">
+<title data-rh="true">intro.v1 | PostgreSQL</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://your-docusaurus-site.example.com/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="https://your-docusaurus-site.example.com/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="https://your-docusaurus-site.example.com/docs/ssh-key/intro.v1"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="intro.v1 | PostgreSQL"><meta data-rh="true" name="description" content="in intellij -- i am using this --- git@github.com:michael-maldo/docker-notes.git"><meta data-rh="true" property="og:description" content="in intellij -- i am using this --- git@github.com:michael-maldo/docker-notes.git"><link data-rh="true" rel="icon" href="/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://your-docusaurus-site.example.com/docs/ssh-key/intro.v1"><link data-rh="true" rel="alternate" href="https://your-docusaurus-site.example.com/docs/ssh-key/intro.v1" hreflang="en"><link data-rh="true" rel="alternate" href="https://your-docusaurus-site.example.com/docs/ssh-key/intro.v1" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ssh-key","item":"https://your-docusaurus-site.example.com/docs/category/ssh-key"},{"@type":"ListItem","position":2,"name":"intro.v1","item":"https://your-docusaurus-site.example.com/docs/ssh-key/intro.v1"}]}</script><link rel="alternate" type="application/rss+xml" href="/blog/rss.xml" title="PostgreSQL RSS Feed">
+<link rel="alternate" type="application/atom+xml" href="/blog/atom.xml" title="PostgreSQL Atom Feed"><link rel="stylesheet" href="/assets/css/styles.b43f1fb6.css">
+<script src="/assets/js/runtime~main.c0f8640c.js" defer="defer"></script>
+<script src="/assets/js/main.3328c896.js" defer="defer"></script>
+</head>
+<body class="navigation-with-keyboard">
+<svg style="display: none;"><defs>
+<symbol id="theme-svg-external-link" viewBox="0 0 24 24"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"/></symbol>
+</defs></svg>
+<script>!function(){var t=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return window.localStorage.getItem("theme")}catch(t){}}();document.documentElement.setAttribute("data-theme",t||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light")),document.documentElement.setAttribute("data-theme-choice",t||"system")}(),function(){try{const c=new URLSearchParams(window.location.search).entries();for(var[t,e]of c)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><link rel="preload" as="image" href="/img/postgresql-v1.png"><div role="region" aria-label="Skip to main content"><a class="skipToContent_fXgn" href="#__docusaurus_skipToContent_fallback">Skip to main content</a></div><nav aria-label="Main" class="theme-layout-navbar navbar navbar--fixed-top"><div class="navbar__inner"><div class="theme-layout-navbar-left navbar__items"><button aria-label="Toggle navigation bar" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/"><div class="navbar__logo"><img src="/img/postgresql-v1.png" alt="PostgreSQL" class="themedComponent_mlkZ themedComponent--light_NVdE"><img src="/img/postgresql-v1.png" alt="PostgreSQL" class="themedComponent_mlkZ themedComponent--dark_xIcU"></div><b class="navbar__title text--truncate">PostgreSQL</b></a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/docs/intro">Tutorial</a></div><div class="theme-layout-navbar-right navbar__items navbar__items--right"><a href="https://github.com/facebook/docusaurus" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a><div class="toggle_vylO colorModeToggle_DEke"><button class="clean-btn toggleButton_gllP toggleButtonDisabled_aARS" type="button" disabled="" title="system mode" aria-label="Switch between dark and light mode (currently system mode)"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon_g3eP lightToggleIcon_pyhR"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon_g3eP darkToggleIcon_wfgR"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon_g3eP systemToggleIcon_QzmC"><path fill="currentColor" d="m12 21c4.971 0 9-4.029 9-9s-4.029-9-9-9-9 4.029-9 9 4.029 9 9 9zm4.95-13.95c1.313 1.313 2.05 3.093 2.05 4.95s-0.738 3.637-2.05 4.95c-1.313 1.313-3.093 2.05-4.95 2.05v-14c1.857 0 3.637 0.737 4.95 2.05z"></path></svg></button></div><div class="navbarSearchContainer_Bca1"></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="theme-layout-main main-wrapper mainWrapper_z2l0"><div class="docsWrapper_hBAB"><button aria-label="Scroll back to top" class="clean-btn theme-back-to-top-button backToTopButton_sjWU" type="button"></button><div class="docRoot_UBD9"><aside class="theme-doc-sidebar-container docSidebarContainer_YfHR"><div class="sidebarViewport_aRkj"><div class="sidebar_njMd"><nav aria-label="Docs sidebar" class="menu thin-scrollbar menu_SIkG"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/docs/intro"><span title="intro" class="linkLabel_WmDU">intro</span></a></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="categoryLink_byQd menu__link menu__link--sublist" href="/docs/category/basics"><span title="basics" class="categoryLinkLabel_W154">basics</span></a><button aria-label="Expand sidebar category &#x27;basics&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="categoryLink_byQd menu__link menu__link--sublist" href="/docs/category/advanced"><span title="advanced" class="categoryLinkLabel_W154">advanced</span></a><button aria-label="Expand sidebar category &#x27;advanced&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="categoryLink_byQd menu__link menu__link--sublist" href="/docs/category/docusaurus"><span title="Docusaurus" class="categoryLinkLabel_W154">Docusaurus</span></a><button aria-label="Expand sidebar category &#x27;Docusaurus&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="categoryLink_byQd menu__link menu__link--sublist" href="/docs/category/docker"><span title="Docker" class="categoryLinkLabel_W154">Docker</span></a><button aria-label="Expand sidebar category &#x27;Docker&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="categoryLink_byQd menu__link menu__link--sublist" href="/docs/category/github"><span title="Github" class="categoryLinkLabel_W154">Github</span></a><button aria-label="Expand sidebar category &#x27;Github&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="categoryLink_byQd menu__link menu__link--sublist" href="/docs/category/web"><span title="Web" class="categoryLinkLabel_W154">Web</span></a><button aria-label="Expand sidebar category &#x27;Web&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item"><div class="menu__list-item-collapsible"><a class="categoryLink_byQd menu__link menu__link--sublist menu__link--active" href="/docs/category/ssh-key"><span title="ssh-key" class="categoryLinkLabel_W154">ssh-key</span></a><button aria-label="Collapse sidebar category &#x27;ssh-key&#x27;" aria-expanded="true" type="button" class="clean-btn menu__caret"></button></div><ul class="menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/ssh-key/intro"><span title="ssh-key setup" class="linkLabel_WmDU">ssh-key setup</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" tabindex="0" href="/docs/ssh-key/intro.v1"><span title="intro.v1" class="linkLabel_WmDU">intro.v1</span></a></li></ul></li></ul></nav></div></div></aside><main class="docMainContainer_TBSr"><div class="container padding-top--md padding-bottom--lg"><div class="row"><div class="col docItemCol_VOVn"><div class="docItemContainer_Djhp"><article><nav class="theme-doc-breadcrumbs breadcrumbsContainer_Z_bl" aria-label="Breadcrumbs"><ul class="breadcrumbs"><li class="breadcrumbs__item"><a aria-label="Home page" class="breadcrumbs__link" href="/"><svg viewBox="0 0 24 24" class="breadcrumbHomeIcon_YNFT"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z" fill="currentColor"></path></svg></a></li><li class="breadcrumbs__item"><a class="breadcrumbs__link" href="/docs/category/ssh-key"><span>ssh-key</span></a></li><li class="breadcrumbs__item breadcrumbs__item--active"><span class="breadcrumbs__link">intro.v1</span></li></ul></nav><div class="theme-doc-markdown markdown"><header><h1>intro.v1</h1></header><p>in intellij -- i am using this --- <a href="mailto:git@github.com" target="_blank" rel="noopener noreferrer" class="">git@github.com</a>:michael-maldo<!-- -->/docker-notes.git</p>
+<p>That string is an SSH Git URL.</p>
+<p><a href="mailto:git@github.com" target="_blank" rel="noopener noreferrer" class="">git@github.com</a>:michael-maldo<!-- -->/docker-notes.git</p>
+<p>It means:</p>
+<p><a href="mailto:git@github.com" target="_blank" rel="noopener noreferrer" class="">git@github.com</a>
+→ connect to GitHub using SSH, as user git</p>
+<p>michael-maldo/docker-notes → owner + repository name</p>
+<p>.git → the Git repository endpoint</p>
+<p>So in IntelliJ (or any Git client), this implies:</p>
+<p>You are authenticating via SSH keys, not username/password.</p>
+<p>Your machine must have:</p>
+<p>an SSH key (~/.ssh/id_rsa or id_ed25519)</p>
+<p>the public key added to GitHub → Settings → SSH keys</p>
+<p>Practical implications (important)</p>
+<ol>
+<li class="">No browser login needed</li>
+</ol>
+<p>Once SSH is set up:</p>
+<p>git pull</p>
+<p>git push</p>
+<p>IntelliJ sync</p>
+<p>→ all work without prompts.</p>
+<ol start="2">
+<li class="">This is different from HTTPS</li>
+</ol>
+<p>The HTTPS version would be:</p>
+<p><a href="https://github.com/michael-maldo/docker-notes.git" target="_blank" rel="noopener noreferrer" class="">https://github.com/michael-maldo/docker-notes.git</a></p>
+<p>That one requires:</p>
+<p>either GitHub token</p>
+<p>or browser auth popups</p>
+<p>SSH is better for DevOps workflows, CI/CD, servers, VPS, etc.</p>
+<p>How IntelliJ uses it</p>
+<p>When you clone with that URL in IntelliJ:</p>
+<p>It runs essentially:</p>
+<p>git clone <a href="mailto:git@github.com" target="_blank" rel="noopener noreferrer" class="">git@github.com</a>:michael-maldo<!-- -->/docker-notes.git</p>
+<p>IntelliJ just delegates to your system ssh.</p>
+<p>If something breaks, it’s not an IntelliJ problem, it’s almost always:</p>
+<p>ssh -T <a href="mailto:git@github.com" target="_blank" rel="noopener noreferrer" class="">git@github.com</a></p>
+<p>If that fails → SSH setup issue.</p>
+<p>Very DevOps-relevant concept</p>
+<p>This is the exact same mechanism you’ll use for:</p>
+<p>GitHub Actions runners</p>
+<p>CI servers</p>
+<p>Kubernetes build agents</p>
+<p>VPS automation</p>
+<p>No passwords, just keys.</p>
+<p>Mental model (simple)</p>
+<p>Think of it as:</p>
+<p>“Log into GitHub as my machine instead of my browser.”</p>
+<p>Your laptop/VM is the identity, not you.</p>
+<p>That’s why SSH Git URLs are the professional default.</p>
+<p>how to setup sshkey access with github?</p>
+<p>This is one of those core DevOps skills — once you do this once, you’ll use it everywhere (laptops, VPS, CI runners, cloud VMs).</p>
+<p>I’ll give you the clean, modern way (ED25519).</p>
+<ol>
+<li class="">Check if you already have a key
+ls -la ~/.ssh</li>
+</ol>
+<p>If you see something like:</p>
+<p>id_ed25519 and id_ed25519.pub → you already have one</p>
+<p>id_rsa and id_rsa.pub → older but still works</p>
+<p>If not, generate one.</p>
+<ol start="2">
+<li class="">Generate a new SSH key
+ssh-keygen -t ed25519 -C &quot;michael@github&quot;</li>
+</ol>
+<p>Press Enter for:</p>
+<p>file location (default is fine)</p>
+<p>passphrase (recommended, but optional)</p>
+<p>This creates:</p>
+<p>~/.ssh/id_ed25519      (private key)
+~/.ssh/id_ed25519.pub  (public key)</p>
+<ol start="3">
+<li class="">Start ssh-agent and load key
+eval &quot;$(ssh-agent -s)&quot;
+ssh-add ~/.ssh/id_ed25519</li>
+</ol>
+<p>Now your key is in memory.</p>
+<ol start="4">
+<li class="">Add public key to GitHub</li>
+</ol>
+<p>Copy it:</p>
+<p>cat ~/.ssh/id_ed25519.pub</p>
+<p>Then:</p>
+<p>GitHub →
+Profile pic → Settings → SSH and GPG keys →
+New SSH key</p>
+<p>Title: Laptop / VPS / Work PC</p>
+<p>Key type: Authentication</p>
+<p>Paste the key</p>
+<ol start="5">
+<li class="">Test it
+ssh -T <a href="mailto:git@github.com" target="_blank" rel="noopener noreferrer" class="">git@github.com</a></li>
+</ol>
+<p>You should see:</p>
+<p>Hi michael-maldo! You&#x27;ve successfully authenticated...</p>
+<p>No password. Pure key-based auth.</p>
+<ol start="6">
+<li class="">Use SSH URLs in IntelliJ</li>
+</ol>
+<p>Clone with:</p>
+<p><a href="mailto:git@github.com" target="_blank" rel="noopener noreferrer" class="">git@github.com</a>:michael-maldo<!-- -->/docker-notes.git</p>
+<p>or convert existing repo:</p>
+<p>git remote set-url origin <a href="mailto:git@github.com" target="_blank" rel="noopener noreferrer" class="">git@github.com</a>:michael-maldo<!-- -->/docker-notes.git</p>
+<p>Common real-world issues
+🔹 “Permission denied (publickey)”</p>
+<p>Usually means:</p>
+<p>key not added to GitHub</p>
+<p>ssh-agent not running</p>
+<p>wrong key loaded</p>
+<p>Check:</p>
+<p>ssh-add -l</p>
+<p>🔹 Multiple machines (laptop + VPS + cloud)</p>
+<p>Each machine should have its own key.</p>
+<p>On VPS:</p>
+<p>ssh-keygen -t ed25519 -C &quot;vps-prod&quot;</p>
+<p>Add that key to GitHub as well.</p>
+<p>This is exactly how:</p>
+<p>CI/CD runners</p>
+<p>Kubernetes nodes</p>
+<p>build servers</p>
+<p>authenticate.</p>
+<p>Pro tip (very DevOps)</p>
+<p>Create ~/.ssh/config:</p>
+<p>Host github.com
+User git
+IdentityFile ~/.ssh/id_ed25519</p>
+<p>Now SSH is deterministic even with multiple keys.</p>
+<p>Why this matters for your career</p>
+<p>For someone targeting Cloud / Platform / DevOps roles like you:</p>
+<p>SSH keys are used for:</p>
+<p>GitHub</p>
+<p>GitLab</p>
+<p>Bitbucket</p>
+<p>Ansible</p>
+<p>Terraform</p>
+<p>CI agents</p>
+<p>Kubernetes nodes</p>
+<p>Cloud bastion hosts</p>
+<p>It’s basically the Unix equivalent of your passport.</p>
+<p>Once you understand SSH keys, half of “mysterious infra auth problems” disappear.</p>
+<p>what if i lose the private key on my local machine</p>
+<p>Great question — and this is exactly the right level of paranoia for DevOps 😄</p>
+<p>Short answer:</p>
+<p>If you lose your private key, nothing breaks permanently — you just generate a new one.</p>
+<p>There is no way to recover a lost private key. By design.</p>
+<p>What actually happens if you lose it?</p>
+<p>Say your laptop dies and you lose:</p>
+<p>~/.ssh/id_ed25519</p>
+<p>But GitHub still has your public key.</p>
+<p>Result:</p>
+<p>You can no longer authenticate from that machine.</p>
+<p>GitHub is still secure.</p>
+<p>Nobody can “recreate” your private key.</p>
+<p>This is good security.</p>
+<p>The recovery process (normal workflow)</p>
+<p>From a new machine:</p>
+<ol>
+<li class="">
+<p>Generate new key
+ssh-keygen -t ed25519 -C &quot;new-laptop&quot;</p>
+</li>
+<li class="">
+<p>Add new public key to GitHub</p>
+</li>
+</ol>
+<p>GitHub → Settings → SSH keys → New key</p>
+<ol start="3">
+<li class="">Remove old key (optional but recommended)</li>
+</ol>
+<p>Delete the lost one from GitHub.</p>
+<p>Done. You&#x27;re back in business.</p>
+<p>Important: GitHub is NOT tied to a single key</p>
+<p>You can have:</p>
+<p>5 machines</p>
+<p>10 keys</p>
+<p>1 GitHub account</p>
+<p>Each key is independent.</p>
+<p>This is how companies manage:</p>
+<p>dev laptops</p>
+<p>CI runners</p>
+<p>prod servers</p>
+<p>Worst case scenario</p>
+<p>The only real danger is:</p>
+<p>If someone steals your private key and your machine is compromised.</p>
+<p>Then they can push code as you.</p>
+<p>Which is why:</p>
+<p>passphrases matter</p>
+<p>removing old keys matters</p>
+<p>one key per machine matters</p>
+<p>Professional-grade practices (what seniors do)</p>
+<ol>
+<li class="">One key per device</li>
+</ol>
+<p>Never reuse the same key across machines.</p>
+<p>Good:</p>
+<p>Laptop → id_ed25519_laptop
+VPS → id_ed25519_vps
+CI → id_ed25519_ci</p>
+<ol start="2">
+<li class="">Descriptive names on GitHub</li>
+</ol>
+<p>Instead of:</p>
+<p>id_ed25519</p>
+<p>Use:</p>
+<p>MacBook-Pro-2024
+AWS-Build-Runner
+Home-PC</p>
+<p>So when something dies → you know what to delete.</p>
+<ol start="3">
+<li class="">Passphrase + ssh-agent</li>
+</ol>
+<p>Your private key on disk is encrypted.
+Agent decrypts it in memory only.</p>
+<p>This protects you even if disk is stolen.</p>
+<ol start="4">
+<li class="">For servers: no backups of private keys</li>
+</ol>
+<p>Never:</p>
+<p>email them</p>
+<p>put them in Dropbox</p>
+<p>commit them (obviously)</p>
+<p>If a server is destroyed:</p>
+<p>generate a new key</p>
+<p>add it to GitHub</p>
+<p>move on</p>
+<p>This is the intended lifecycle.</p>
+<p>Mental model (important)</p>
+<p>Think of SSH keys like physical locks:</p>
+<p>Public key = lock on the door (GitHub)</p>
+<p>Private key = your key</p>
+<p>Lose the key?
+→ Replace the lock.
+→ Make a new key.</p>
+<p>You don&#x27;t panic.
+You rotate credentials.</p>
+<p>That’s literally how real infrastructure works.</p>
+<p>Why this is actually good news</p>
+<p>Because in real cloud work:</p>
+<p>Instances are ephemeral</p>
+<p>CI runners are disposable</p>
+<p>Laptops get replaced</p>
+<p>Containers die constantly</p>
+<p>SSH keys are designed for loss, rotation, and renewal.</p>
+<p>If losing a key were catastrophic, modern cloud would be impossible.</p>
+<p>One-liner summary</p>
+<p>Losing your private key is not a disaster.
+It’s just a credential rotation event.
+Generate a new one, add it, delete the old one, continue life.</p>
+<p>can the public key be used by other machines?</p>
+<p>Yes — but not in the way people often think.</p>
+<p>Short answer:</p>
+<p>The public key can be copied to any number of machines, but it is useless without the matching private key.</p>
+<p>What the public key actually does</p>
+<p>The public key is just:</p>
+<p>“I will accept logins from whoever proves they own the matching private key.”</p>
+<p>It’s a lock, not a key.</p>
+<p>Anyone can:</p>
+<p>see it</p>
+<p>copy it</p>
+<p>store it</p>
+<p>publish it</p>
+<p>And it gives them zero power.</p>
+<p>Can other machines use my public key?</p>
+<p>They can store it, yes.
+They cannot authenticate with it.</p>
+<p>Because authentication requires:</p>
+<p>public key (on GitHub)
++
+private key (on your machine)</p>
+<p>Without the private key:
+→ mathematically impossible to log in.</p>
+<p>Typical real-world layouts
+GitHub side (server)</p>
+<p>Stores:</p>
+<p>id_ed25519.pub</p>
+<p>Your laptop</p>
+<p>Stores:</p>
+<p>id_ed25519   (secret)</p>
+<p>When you run:</p>
+<p>git push</p>
+<p>GitHub sends a challenge:
+Your machine signs it with the private key.
+GitHub verifies with the public key.</p>
+<p>At no point is the private key transmitted.</p>
+<p>Important implication (security)</p>
+<p>This is why it’s safe to:</p>
+<p>paste public keys on websites</p>
+<p>commit them in repos</p>
+<p>send them in Slack</p>
+<p>And why it’s catastrophic to leak:</p>
+<p>~/.ssh/id_ed25519</p>
+<p>DevOps best practice (this matters)</p>
+<p>Even though you could:</p>
+<p>copy the same private key to 5 machines</p>
+<p>You should never do this.</p>
+<p>Because:</p>
+<p>you lose traceability</p>
+<p>you can&#x27;t revoke one device</p>
+<p>one compromise breaks all</p>
+<p>Instead:</p>
+<p>Machine	Key
+Laptop	id_ed25519_laptop
+VPS	id_ed25519_vps
+CI runner	id_ed25519_ci</p>
+<p>All have different private keys.
+All public keys live on GitHub.</p>
+<p>Subtle but powerful concept</p>
+<p>Public keys are often treated as:</p>
+<p>identities of machines</p>
+<p>Not people.</p>
+<p>In real infra:</p>
+<p>GitHub doesn&#x27;t know &quot;Michael&quot;</p>
+<p>It knows &quot;this cryptographic entity is allowed&quot;</p>
+<p>That&#x27;s why SSH scales to:</p>
+<p>millions of servers</p>
+<p>zero shared secrets</p>
+<p>no passwords</p>
+<p>Final mental model</p>
+<p>Public key = padlock
+Private key = the only physical key</p>
+<p>You can give everyone the padlock.
+Only one person can open it.</p>
+<p>so if you will multiple private keys -- thenm that corresponds to multiple public keys -- as key pairs</p>
+<p>Exactly. 💯
+You’ve got it.</p>
+<p>Each private key always has exactly one matching public key.
+That pair is a cryptographic identity.</p>
+<p>So:</p>
+<p>1 private key → 1 public key → 1 identity</p>
+<p>5 private keys → 5 public keys → 5 identities</p>
+<p>These are called key pairs.</p>
+<p>How this looks in practice</p>
+<p>On disk:</p>
+<p>~/.ssh/id_ed25519_laptop      (private)
+~/.ssh/id_ed25519_laptop.pub  (public)</p>
+<p>~/.ssh/id_ed25519_vps
+~/.ssh/id_ed25519_vps.pub</p>
+<p>On GitHub:</p>
+<p>MacBook-Pro-2024
+AWS-VPS
+CI-Runner</p>
+<p>Each line is one public key.</p>
+<p>This is why SSH is so powerful</p>
+<p>You are not logging in as:</p>
+<p>michael / password</p>
+<p>You are logging in as:</p>
+<p>cryptographic entity #A7F3C9...</p>
+<p>Which happens to be on your laptop.</p>
+<p>Important invariant (never breaks)</p>
+<p>You can derive the public key from the private key.
+You can NEVER derive the private key from the public key.</p>
+<p>One-way math.</p>
+<p>That’s the entire security model.</p>
+<p>Advanced but very real DevOps detail</p>
+<p>You can even regenerate a public key from a private one:</p>
+<p>ssh-keygen -y -f id_ed25519_laptop &gt; id_ed25519_laptop.pub</p>
+<p>Meaning:</p>
+<p>private key is the source of truth</p>
+<p>public key is just a projection</p>
+<p>Why seniors insist on one key per machine</p>
+<p>Because a key pair = identity.</p>
+<p>So if:</p>
+<p>a laptop is stolen → revoke only that key</p>
+<p>a CI runner is compromised → revoke only that key</p>
+<p>a VPS is destroyed → delete only that key</p>
+<p>Zero blast radius.</p>
+<p>This maps perfectly to cloud concepts</p>
+<p>SSH key pairs are basically:</p>
+<p>AWS IAM users (but simpler)</p>
+<p>GCP service accounts (but local)</p>
+<p>Kubernetes cert identities</p>
+<p>mTLS certificates</p>
+<p>Same pattern:</p>
+<p>one identity = one key pair</p>
+<p>One-liner that’s worth memorising</p>
+<p>Multiple private keys ⇒ multiple public keys ⇒ multiple identities.
+One key pair = one cryptographic “user”.</p>
+<p>at the end of the day --- it is having idividual acoounts -- on ssh keys</p>
+<p>Yes — that’s a very good way to think about it. And in fact, that’s exactly how modern systems treat it.</p>
+<p>SSH keys are basically individual accounts, just without usernames and passwords.</p>
+<p>The real model (what’s actually happening)</p>
+<p>In old systems:</p>
+<p>username + password = identity</p>
+<p>In modern systems:</p>
+<p>private key = identity
+public key = account record</p>
+<p>There is no “user” in the human sense.
+There is only:</p>
+<p>“This cryptographic entity is allowed.”</p>
+<p>Why this is even better than accounts</p>
+<p>Traditional accounts:</p>
+<p>need password resets</p>
+<p>can be phished</p>
+<p>reused everywhere</p>
+<p>stored on servers (hashed, but still)</p>
+<p>SSH identities:</p>
+<p>never transmit secrets</p>
+<p>cannot be brute-forced</p>
+<p>cannot be guessed</p>
+<p>live only on the client</p>
+<p>The server (GitHub, Linux, CI) only stores:</p>
+<p>a list of trusted public keys</p>
+<p>That’s it.</p>
+<p>This is literally how cloud works</p>
+<p>When you:</p>
+<p>ssh ubuntu@ec2-instance</p>
+<p>GitHub Actions deploy</p>
+<p>Kubernetes node joins cluster</p>
+<p>Terraform talks to cloud API</p>
+<p>They are not users.</p>
+<p>They are:</p>
+<p>machine identities with key pairs</p>
+<p>Why this mindset is important for you (DevOps)</p>
+<p>Because once you see SSH keys as “accounts”, everything clicks:</p>
+<p>Concept	Old world	Modern world
+Login	password	private key
+Account	user	key pair
+Revoke access	disable user	delete public key
+Audit	who logged in	which key was used
+Zero trust	impossible	native
+Even more precise mental model</p>
+<p>SSH key = service account</p>
+<p>Not human.
+Not personal.
+Not emotional.</p>
+<p>Just:</p>
+<p>a cryptographic actor with permissions.</p>
+<p>This is why infra feels different from app dev</p>
+<p>In app dev you think:</p>
+<p>users, sessions, cookies</p>
+<p>In infra you think:</p>
+<p>identities, trust, keys, certificates</p>
+<p>No humans involved.</p>
+<p>One sentence that sums it up</p>
+<p>SSH keys are individual accounts,
+but the “person” is a machine, not you.+--++++</p></div></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/docs/ssh-key/intro"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">ssh-key setup</div></a></nav></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/docs/intro">Tutorial</a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Community</div><ul class="footer__items clean-list"></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://github.com/facebook/docusaurus" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">copyright © 2026 PostgreSQL Tutorial. Built with Docusaurus.</div></div></div></footer></div>
+</body>
+</html>
