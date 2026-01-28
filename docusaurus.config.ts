@@ -78,7 +78,7 @@ const config: Config = {
       title: 'PostgreSQL',
       logo: {
         alt: 'PostgreSQL',
-        src: 'img/elephant.png',
+        src: 'img/postgresql-v1.png',
       },
       items: [
         {

@@ -1,0 +1,27 @@
+TODO
+    ## Docker Compose
+    ### tie up images springboot-app(s) postgresql
+    ### use Docker compose to tie up apps, postgres, message broker
+
+TODO
+    ### run docker service from a systemctl
+
+TODO
+    clarify purpose of spring profiles -- dev, prod
+    spring boot profile management
+
+TODO
+    wire spring boot actions
+
+TODO
+    setup separate tutorial sites
+        postgres
+            postgis
+        docker
+        github
+            ci/cd actions
+        Spring Boot
+            jwt
+        WEB dns, nginx, certbot ssl
+        ssh
+            ssh-key
